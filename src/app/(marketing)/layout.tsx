@@ -1,119 +1,152 @@
+'use client';
+
 import Link from 'next/link';
-import { siteConfig } from '@/config/site';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { siteConfig, hasGitHubUrl } from '@/config/site';
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const showGitHub = hasGitHubUrl();
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <div className="flex min-h-screen flex-col bg-white">
+      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">
                 CN
               </div>
-              <span className="font-semibold text-lg">{siteConfig.name}</span>
+              <span className="font-semibold text-gray-900">{siteConfig.name}</span>
             </Link>
             
             <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/app"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              <a
+                href="#features"
+                className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
               >
-                App
-              </Link>
+                Product
+              </a>
               <Link
                 href="/docs"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
               >
                 Docs
+              </Link>
+              <Link
+                href="/app"
+                className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              >
+                Sign in
               </Link>
             </nav>
           </div>
           
-          <Link
-            href="/app"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            Launch App →
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/app"
+              className="hidden md:inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+            >
+              Get started
+            </Link>
+            
+            <button
+              type="button"
+              className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
+        
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 bg-white">
+            <nav className="flex flex-col px-4 py-4 space-y-3">
+              <a
+                href="#features"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Product
+              </a>
+              <Link
+                href="/docs"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Docs
+              </Link>
+              <Link
+                href="/app"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/app"
+                onClick={() => setMobileMenuOpen(false)}
+                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+              >
+                Get started
+              </Link>
+            </nav>
+          </div>
+        )}
       </header>
       
       <main className="flex-1">
         {children}
       </main>
       
-      <footer className="border-t border-border/40 bg-muted/30">
+      <footer className="border-t border-gray-100 bg-gray-50">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="col-span-2 md:col-span-1">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+            <div>
               <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-xs">
                   CN
                 </div>
-                <span className="font-semibold">{siteConfig.name}</span>
+                <span className="font-semibold text-gray-900">{siteConfig.name}</span>
               </Link>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Human-readable addresses for Canton Network.
+              <p className="mt-2 text-sm text-gray-500 max-w-xs">
+                Readable names for Canton party IDs.
               </p>
             </div>
             
-            <div>
-              <h4 className="font-medium mb-3">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="/app" className="hover:text-foreground transition-colors">
-                    App
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/app/demo/recipient" className="hover:text-foreground transition-colors">
-                    Integration Demo
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-3">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="/docs" className="hover:text-foreground transition-colors">
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href={siteConfig.links.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    GitHub
-                  </a>
-                </li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-3">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="/privacy" className="hover:text-foreground transition-colors">
-                    Privacy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-foreground transition-colors">
-                    Terms
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+              <Link href="/docs" className="text-gray-600 hover:text-gray-900">
+                Docs
+              </Link>
+              <Link href="/app" className="text-gray-600 hover:text-gray-900">
+                Get started
+              </Link>
+              <Link href="/app" className="text-gray-600 hover:text-gray-900">
+                Sign in
+              </Link>
+              {showGitHub && (
+                <a
+                  href={siteConfig.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  GitHub
+                </a>
+              )}
+              <Link href="/privacy" className="text-gray-600 hover:text-gray-900">
+                Privacy
+              </Link>
+              <Link href="/terms" className="text-gray-600 hover:text-gray-900">
+                Terms
+              </Link>
+            </nav>
           </div>
           
-          <div className="mt-8 pt-8 border-t border-border/40">
-            <p className="text-sm text-muted-foreground text-center">
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <p className="text-sm text-gray-500 text-center">
               © {new Date().getFullYear()} {siteConfig.name}. Not affiliated with Digital Asset or Canton Network.
             </p>
           </div>

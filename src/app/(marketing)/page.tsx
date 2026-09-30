@@ -1,205 +1,192 @@
 import Link from 'next/link';
-import { siteConfig } from '@/config/site';
-import { 
-  ShieldCheck, 
-  Globe, 
-  Link as LinkIcon, 
-  Zap,
-  ArrowRight,
-  Search,
-  Wallet,
-  CheckCircle2,
-  Share2
-} from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 
 export const metadata = {
-  title: 'Canton Names - Human-Readable Addresses for Canton Network',
-  description: 'Replace complex party IDs with memorable names like alice.unverified.cns. Easy to share, easy to remember.',
+  title: 'Canton Names - Readable Names for Canton Party IDs',
+  description: 'Canton Names lets users and apps replace long, error-prone party IDs with simple names — so you always send to the right party.',
 };
 
 export default function LandingPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-24 sm:py-32 lg:py-40">
-          <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-              Human-readable addresses for{' '}
-              <span className="text-primary">Canton Network</span>
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Replace complex party IDs with memorable names like{' '}
-              <code className="px-2 py-0.5 bg-primary/10 text-primary rounded font-mono text-base">
-                alice.unverified.cns
-              </code>
-              . Easy to share, easy to remember.
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/app"
-                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Register a Name
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-              <Link
-                href="/docs"
-                className="inline-flex items-center justify-center rounded-lg border border-border px-6 py-3 text-base font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Read the Docs
-              </Link>
+      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50/50 to-white">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-28 lg:py-32">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <p className="text-sm font-medium text-indigo-600 mb-3">
+                Naming layer for Canton
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-tight">
+                Readable names for Canton party IDs
+              </h1>
+              <p className="mt-6 text-lg text-gray-600 leading-relaxed">
+                Canton Names lets users and apps replace long, error-prone party IDs with simple names — so you always send to the right party.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <Link
+                  href="/app"
+                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                >
+                  Get started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+                <Link
+                  href="/docs"
+                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                >
+                  View docs
+                </Link>
+              </div>
+              <p className="mt-4 text-sm text-gray-500">
+                <Link href="/app" className="text-indigo-600 hover:text-indigo-700 hover:underline">
+                  Open app →
+                </Link>
+              </p>
+            </div>
+            
+            {/* Hero Visual - Party ID Resolution Mockup */}
+            <div className="relative">
+              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-200/50">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">
+                  Recipient
+                </p>
+                
+                {/* Before: Long Party ID */}
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs text-gray-400">Before</span>
+                  </div>
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                    <code className="text-sm text-gray-600 font-mono break-all">
+                      alice::1220a3f9b8c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1c7e2
+                    </code>
+                  </div>
+                </div>
+                
+                {/* After: CNS Name */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs text-gray-400">After</span>
+                  </div>
+                  <div className="rounded-lg border-2 border-indigo-500 bg-indigo-50/50 px-4 py-3">
+                    <div className="flex items-center justify-between">
+                      <code className="text-sm text-indigo-700 font-mono font-medium">
+                        alice.unverified.cns
+                      </code>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                        <Check className="h-3 w-3" />
+                        Resolved
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="mt-4 text-xs text-gray-500 text-center">
+                  Names resolve automatically to party IDs
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="border-t border-border/40 bg-muted/30">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-24">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <BenefitCard
-              icon={<ShieldCheck className="h-6 w-6" />}
-              title="No More Copy-Paste Errors"
-              description="Send payments to alice.unverified.cns instead of a 66-character hex string."
-            />
-            <BenefitCard
-              icon={<Globe className="h-6 w-6" />}
-              title="Universal"
-              description="Works across any app connected to Canton Network."
-            />
-            <BenefitCard
-              icon={<LinkIcon className="h-6 w-6" />}
-              title="On-Chain"
-              description="Names resolve via the public Scan API—no centralized lookup."
-            />
-            <BenefitCard
-              icon={<Zap className="h-6 w-6" />}
-              title="Open Standard"
-              description="Integrate the <CnsRecipientInput> component in minutes."
-            />
+      {/* Benefits Strip */}
+      <section className="border-y border-gray-100 bg-gray-50/50">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8">
+          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
+            <BenefitItem text="Easy to remember" />
+            <BenefitItem text="Harder to mistype" />
+            <BenefitItem text="Routes correctly every time" />
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="border-t border-border/40">
+      <section id="features" className="scroll-mt-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                Built for developers
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Add Canton Names resolution to your app with a single component.
-              </p>
-              
-              <div className="mt-8 rounded-xl bg-slate-900 p-4 overflow-x-auto">
-                <pre className="text-sm text-slate-100">
-                  <code>{`import { CnsRecipientInput } from "@canton/names";
-
-<CnsRecipientInput
-  onResolved={(partyId) => setRecipient(partyId)}
-/>`}</code>
-                </pre>
-              </div>
-              
-              <ul className="mt-8 space-y-4">
-                <FeatureItem>Instant availability checks</FeatureItem>
-                <FeatureItem>Auto-complete suggestions</FeatureItem>
-                <FeatureItem>Party-ID fallback for advanced users</FeatureItem>
-                <FeatureItem>Accessible and keyboard-navigable</FeatureItem>
-              </ul>
-            </div>
-            
-            <div className="relative">
-              <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-border/60 shadow-lg flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary mx-auto mb-4">
-                    <Search className="h-8 w-8" />
-                  </div>
-                  <p className="text-lg font-medium">Integration Demo</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    See it in action at{' '}
-                    <Link href="/app/demo/recipient" className="text-primary hover:underline">
-                      /app/demo/recipient
-                    </Link>
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+              Built for simplicity
+            </h2>
+            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+              Canton Names makes party identification straightforward for users and developers alike.
+            </p>
+          </div>
+          
+          <div className="grid sm:grid-cols-3 gap-8">
+            <FeatureCard
+              title="Readable identities"
+              description="Replace cryptographic party IDs with names people can actually read, share, and remember."
+            />
+            <FeatureCard
+              title="Drop-in recipient field"
+              description="Add name resolution to your app with a single component. Handles validation, lookup, and fallback automatically."
+            />
+            <FeatureCard
+              title="Reliable routing"
+              description="Names resolve to the correct party ID every time, reducing errors in payments and transfers."
+            />
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section className="border-t border-border/40 bg-muted/30">
+      <section className="border-t border-gray-100 bg-gray-50/50">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-24">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
               How it works
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Register your name in minutes, use it everywhere on Canton.
+            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+              Three simple steps from name to transaction.
             </p>
           </div>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-3 gap-8 lg:gap-12">
             <StepCard
               number={1}
-              icon={<Search className="h-6 w-6" />}
-              title="Search"
-              description="Check availability instantly"
+              title="Choose a name"
+              description="Pick an available name that's easy to share and remember."
             />
             <StepCard
               number={2}
-              icon={<Wallet className="h-6 w-6" />}
-              title="Connect"
-              description="Link your Canton wallet"
+              title="Resolve automatically"
+              description="When someone enters your name, it resolves to your party ID instantly."
             />
             <StepCard
               number={3}
-              icon={<CheckCircle2 className="h-6 w-6" />}
-              title="Pay"
-              description="Approve a small CC fee"
-            />
-            <StepCard
-              number={4}
-              icon={<Share2 className="h-6 w-6" />}
-              title="Share"
-              description="Use your name anywhere"
+              title="Send with confidence"
+              description="Transactions route to the right party — no copy-paste errors."
             />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="border-t border-border/40">
+      {/* Closing CTA Section */}
+      <section className="border-t border-gray-100">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-24">
-          <div className="rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border border-border/60 p-8 sm:p-12 text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Ready to simplify payments?
+          <div className="rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 px-8 py-12 sm:px-12 sm:py-16 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Make Canton party IDs readable
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-              Register your Canton Name today and make your identity memorable.
+            <p className="mt-4 text-lg text-indigo-100 max-w-xl mx-auto">
+              Start using human-readable names for your Canton Network identity today.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/app"
-                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-indigo-600 shadow-sm transition-colors hover:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-600"
               >
-                Launch App
+                Get started
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
-              <a
-                href={siteConfig.links.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-lg border border-border px-6 py-3 text-base font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              <Link
+                href="/docs"
+                className="inline-flex items-center justify-center rounded-lg border border-indigo-400 bg-transparent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-600"
               >
-                View on GitHub
-              </a>
+                View docs
+              </Link>
             </div>
           </div>
         </div>
@@ -208,58 +195,48 @@ export default function LandingPage() {
   );
 }
 
-function BenefitCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
+function BenefitItem({ text }: { text: string }) {
   return (
-    <div className="flex flex-col">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4">
-        {icon}
+    <div className="flex items-center justify-center gap-2 text-center">
+      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+        <Check className="h-3 w-3" />
       </div>
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-2 text-muted-foreground">{description}</p>
+      <span className="text-sm font-medium text-gray-700">{text}</span>
     </div>
   );
 }
 
-function FeatureItem({ children }: { children: React.ReactNode }) {
+function FeatureCard({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
-    <li className="flex items-center gap-3">
-      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-        <CheckCircle2 className="h-4 w-4" />
-      </div>
-      <span className="text-muted-foreground">{children}</span>
-    </li>
+    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      <p className="mt-2 text-sm text-gray-600 leading-relaxed">{description}</p>
+    </div>
   );
 }
 
 function StepCard({
   number,
-  icon,
   title,
   description,
 }: {
   number: number;
-  icon: React.ReactNode;
   title: string;
   description: string;
 }) {
   return (
-    <div className="relative flex flex-col items-center text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-background border-2 border-primary text-primary mb-4 relative">
-        {icon}
-        <span className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-          {number}
-        </span>
+    <div className="text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white font-bold text-lg mb-4">
+        {number}
       </div>
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      <p className="mt-2 text-sm text-gray-600 leading-relaxed">{description}</p>
     </div>
   );
 }
