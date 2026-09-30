@@ -44,7 +44,7 @@ export function NameDetails({ name }: NameDetailsProps) {
   }, []);
 
   const shareUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/name/${encodeURIComponent(name)}`
+    ? `${window.location.origin}/app/name/${encodeURIComponent(name)}`
     : '';
 
   if (isLoading) {
@@ -68,7 +68,7 @@ export function NameDetails({ name }: NameDetailsProps) {
   if (error) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
-        <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
+        <Link href="/app" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-5 w-5" />
           Back to Search
         </Link>
@@ -86,7 +86,7 @@ export function NameDetails({ name }: NameDetailsProps) {
   if (!resolved) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
-        <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
+        <Link href="/app" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-5 w-5" />
           Back to Search
         </Link>
@@ -101,7 +101,7 @@ export function NameDetails({ name }: NameDetailsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href={`/register?name=${encodeURIComponent(parseCanonicalName(name))}`}>
+            <Link href={`/app/register?name=${encodeURIComponent(parseCanonicalName(name))}`}>
               <Button>Register This Name</Button>
             </Link>
           </CardContent>
@@ -114,7 +114,7 @@ export function NameDetails({ name }: NameDetailsProps) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
+      <Link href="/app" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-5 w-5" />
         Back to Search
       </Link>

@@ -98,7 +98,7 @@ function NameEntryCard({
               </TooltipContent>
             </Tooltip>
             
-            <Link href={`/name/${encodeURIComponent(entry.name)}`}>
+            <Link href={`/app/name/${encodeURIComponent(entry.name)}`}>
               <Button variant="outline" size="icon">
                 <ExternalLink className="h-4 w-4" />
               </Button>
@@ -196,7 +196,7 @@ export function MyNamesList() {
               : 'No names registered yet'}
           </p>
         </div>
-        <Link href="/">
+        <Link href="/app">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
             Register New Name
@@ -224,7 +224,7 @@ export function MyNamesList() {
             <p className="text-sm text-muted-foreground mb-4">
               Register your first Canton Name to get started
             </p>
-            <Link href="/">
+            <Link href="/app">
               <Button>Search Available Names</Button>
             </Link>
           </CardContent>

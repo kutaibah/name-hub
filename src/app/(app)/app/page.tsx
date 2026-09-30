@@ -7,7 +7,7 @@ import { getNetworkName, isDemoMode } from '@/lib/cns/config';
 import { CNS_SUFFIX } from '@/lib/cns/types';
 import { Shield, Zap, Globe, Search } from 'lucide-react';
 
-export default function HomePage() {
+export default function AppHomePage() {
   const isDemo = isDemoMode();
 
   return (

@@ -1,7 +1,7 @@
 import { RecipientShowcase } from '@/components/cns/recipient-showcase';
 
 export const metadata = {
-  title: 'Integration Demo - Canton Names',
+  title: 'Integration Demo',
   description: 'Demonstration of the reusable CnsRecipientInput component for Canton Network applications.',
 };
 

@@ -39,6 +39,20 @@ pnpm dev
 
 The app runs at [http://localhost:3847](http://localhost:3847).
 
+### Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Marketing landing page |
+| `/app` | Application home (search for names) |
+| `/app/register` | Name registration flow |
+| `/app/names` | Your registered names |
+| `/app/name/[name]` | Name details and sharing |
+| `/app/demo/recipient` | Integration component demo |
+| `/docs` | Documentation |
+| `/privacy` | Privacy policy |
+| `/terms` | Terms of service |
+
 ### Demo Mode
 
 By default, the app runs in **demo mode** with simulated data. This allows you to explore all features without connecting to the Canton Network.
@@ -81,12 +95,21 @@ NEXT_PUBLIC_NETWORK_NAME=DevNet
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx            # Home / Search
-│   ├── register/           # Registration flow
-│   ├── names/              # My Names list
-│   ├── name/[name]/        # Name details
-│   └── demo/recipient/     # Integration showcase
+├── app/
+│   ├── layout.tsx          # Root layout
+│   ├── (marketing)/        # Marketing pages (light theme)
+│   │   ├── layout.tsx      # Marketing layout with header/footer
+│   │   ├── page.tsx        # Landing page (/)
+│   │   ├── docs/           # Documentation (/docs)
+│   │   ├── privacy/        # Privacy policy (/privacy)
+│   │   └── terms/          # Terms of service (/terms)
+│   └── (app)/              # App routes (dark theme)
+│       └── app/
+│           ├── page.tsx    # App home / Search (/app)
+│           ├── register/   # Registration flow (/app/register)
+│           ├── names/      # My Names list (/app/names)
+│           ├── name/[name]/ # Name details (/app/name/[name])
+│           └── demo/recipient/ # Integration showcase
 ├── components/
 │   ├── cns/                # CNS-specific components
 │   │   ├── name-search.tsx
@@ -94,7 +117,11 @@ src/
 │   │   ├── registration-flow.tsx
 │   │   ├── name-details.tsx
 │   │   └── ...
+│   ├── layout/             # Layout components
+│   │   └── app-header.tsx  # App header with navigation
 │   └── ui/                 # shadcn/ui components
+├── config/
+│   └── site.ts             # Site configuration
 ├── lib/
 │   ├── cns/                # CNS core logic
 │   │   ├── types.ts        # Types and validation
@@ -125,7 +152,7 @@ import { CnsRecipientInput } from '@/components/cns/cns-recipient-input';
 />
 ```
 
-See the Integration Demo at `/demo/recipient` for a live example.
+See the Integration Demo at `/app/demo/recipient` for a live example.
 
 ## Documentation
 

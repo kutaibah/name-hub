@@ -3,7 +3,7 @@ import { RegistrationFlow } from '@/components/cns/registration-flow';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata = {
-  title: 'Register Name - Canton Names',
+  title: 'Register Name',
   description: 'Register a new Canton Name Service (CNS) name for your Canton Network identity.',
 };
 

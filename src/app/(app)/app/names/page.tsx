@@ -1,7 +1,7 @@
 import { MyNamesList } from '@/components/cns/my-names-list';
 
 export const metadata = {
-  title: 'My Names - Canton Names',
+  title: 'My Names',
   description: 'View and manage your registered Canton Name Service (CNS) names.',
 };
 

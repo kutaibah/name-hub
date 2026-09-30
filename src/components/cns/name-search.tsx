@@ -49,14 +49,14 @@ export function NameSearch({
       if (onSelect) {
         onSelect(displayCanonical);
       } else {
-        router.push(`/register?name=${encodeURIComponent(parseCanonicalName(displayCanonical))}`);
+        router.push(`/app/register?name=${encodeURIComponent(parseCanonicalName(displayCanonical))}`);
       }
     }
   }, [availability.status, displayCanonical, onSelect, router]);
 
   const handleViewDetails = useCallback(() => {
     if (availability.status === 'taken' && displayCanonical) {
-      router.push(`/name/${encodeURIComponent(displayCanonical)}`);
+      router.push(`/app/name/${encodeURIComponent(displayCanonical)}`);
     }
   }, [availability.status, displayCanonical, router]);
 

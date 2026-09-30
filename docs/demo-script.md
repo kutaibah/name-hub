@@ -6,8 +6,9 @@
 
 1. Start the app: `pnpm dev`
 2. Open http://localhost:3847
-3. Ensure Demo Controls panel is visible (bottom-right)
-4. Set scenario to "Success"
+3. Navigate to `/app` (or click "Launch App" from landing page)
+4. Ensure Demo Controls panel is visible (bottom-right)
+5. Set scenario to "Success"
 
 ---
 
@@ -17,8 +18,9 @@
 
 > "Canton Names lets users register readable names for their Canton Network identities. Instead of sharing long party IDs like 'auth0_007c...' you can share 'alice.unverified.cns'."
 
-Show the home page:
-- Clean landing with search focus
+Show the landing page (`/`), then navigate to the app (`/app`):
+- Clean marketing page with clear value proposition
+- Click "Launch App" to enter the application
 - Visible network badge (DevNet - Demo)
 - Demo mode banner
 
@@ -70,7 +72,7 @@ Show the home page:
 
 ### Integration Demo (30 seconds)
 
-Navigate to Integration Demo (`/demo/recipient`)
+Navigate to Integration Demo (`/app/demo/recipient`)
 
 > "For developers, we provide a reusable component"
 
@@ -82,7 +84,7 @@ Navigate to Integration Demo (`/demo/recipient`)
 
 ### My Names (15 seconds)
 
-Navigate to My Names (`/names`)
+Navigate to My Names (`/app/names`)
 
 > "Users can view all their registered names, see expiration dates, and manage renewals through their wallet."
 

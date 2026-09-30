@@ -172,7 +172,7 @@ export function RegistrationFlow() {
 
   const handleViewName = useCallback(() => {
     if (registrationState.status === 'confirmed') {
-      router.push(`/name/${encodeURIComponent(registrationState.entry.name)}`);
+      router.push(`/app/name/${encodeURIComponent(registrationState.entry.name)}`);
     }
   }, [registrationState, router]);
 
@@ -191,7 +191,7 @@ export function RegistrationFlow() {
           <CardDescription>Search for an available name first</CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/">
+          <Link href="/app">
             <Button>
               <ChevronLeft className="h-4 w-4 mr-2" />
               Go to Search
@@ -205,7 +205,7 @@ export function RegistrationFlow() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-2">
-        <Link href="/" className="text-muted-foreground hover:text-foreground">
+        <Link href="/app" className="text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <h1 className="text-2xl font-bold">Register Name</h1>
@@ -402,7 +402,7 @@ export function RegistrationFlow() {
                   View Name Details
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </Button>
-                <Link href="/names">
+                <Link href="/app/names">
                   <Button variant="outline">
                     My Names
                   </Button>

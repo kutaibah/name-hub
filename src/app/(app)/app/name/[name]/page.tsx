@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const decodedName = decodeURIComponent(name);
   
   return {
-    title: `${decodedName} - Canton Names`,
+    title: decodedName,
     description: `View details for Canton Name Service entry: ${decodedName}`,
   };
 }
