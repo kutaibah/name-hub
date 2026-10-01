@@ -1,8 +1,8 @@
-# Canton Names Pitch Deck
+# Canton Names Pitch Decks
 
 Hackathon pitch materials for Canton Names.
 
-## Files
+## Full Pitch Deck (12 slides)
 
 | File | Format | Purpose |
 |------|--------|---------|
@@ -10,11 +10,28 @@ Hackathon pitch materials for Canton Names.
 | `canton-names-pitch.html` | HTML | Source presentable deck |
 | `canton-names-pitch.pdf` | PDF | Printable version (12 pages, 16:9) |
 
+**Served at:** `/pitch`
+
+## Judge Pitch Deck (7 slides, ~60s)
+
+| File | Format | Purpose |
+|------|--------|---------|
+| `pitch-judges/script.md` | Markdown | Verbatim script with timing |
+| `pitch-judges/pitch-judges.md` | Markdown | Slide source with speaker notes |
+| `pitch-judges/pitch-judges.html` | HTML | Source presentable deck |
+| `pitch-judges/pitch-judges.pdf` | PDF | Printable version (7 pages, 16:9) |
+
+**Served at:** `/pitch-judges`
+
 ## Deployment
 
-The pitch deck is served at `/pitch` on the deployed site.
+Both pitch decks are served on the deployed site.
 
-During build, `canton-names-pitch.html` is copied to `public/pitch/index.html` via the `prebuild` script in `package.json`. Edit the source here (`docs/pitches/canton-names-pitch.html`), and the deployed version will update on next build.
+During build, the HTML files are copied to `public/` via the `prebuild` script in `package.json`:
+- `docs/pitches/canton-names-pitch.html` → `public/pitch/index.html`
+- `docs/pitches/pitch-judges/pitch-judges.html` → `public/pitch-judges/index.html`
+
+Edit the source files here, and the deployed version will update on next build.
 
 ## Regenerating the PDF
 

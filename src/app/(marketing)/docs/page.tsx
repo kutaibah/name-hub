@@ -55,6 +55,13 @@ export default function DocsPage() {
           href="/pitch"
           linkText="View Pitch Deck"
         />
+        <DocCard
+          icon={<Presentation className="h-6 w-6" />}
+          title="Judge Pitch"
+          description="7-slide condensed pitch for hackathon judges (~60 seconds)."
+          href="/pitch-judges"
+          linkText="View Judge Pitch"
+        />
       </div>
 
       <section className="mb-12">

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3847",
-    "prebuild": "cp docs/pitches/canton-names-pitch.html public/pitch/index.html",
+    "prebuild": "cp docs/pitches/canton-names-pitch.html public/pitch/index.html && cp docs/pitches/pitch-judges/pitch-judges.html public/pitch-judges/index.html",
     "build": "next build",
     "start": "next start --port 3847",
     "lint": "eslint",
