@@ -363,22 +363,28 @@
 
     @media print {
       @page {
-        size: 1280px 720px landscape;
+        size: 1280px 720px;
         margin: 0;
       }
 
-      html, body {
-        width: 1280px;
-        height: 720px;
-        margin: 0;
-        padding: 0;
+      * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
 
+      html, body {
+        width: 1280px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: var(--bg) !important;
+      }
+
       .deck {
-        height: auto;
-        overflow: visible;
+        width: 1280px !important;
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
       }
 
       .slide {
@@ -386,16 +392,21 @@
         display: flex !important;
         width: 1280px !important;
         height: 720px !important;
-        page-break-after: always;
-        page-break-inside: avoid;
-        break-after: page;
-        break-inside: avoid;
+        min-height: 720px !important;
+        max-height: 720px !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        break-after: page !important;
+        break-inside: avoid !important;
         overflow: hidden !important;
         padding: 3rem 5rem !important;
+        margin: 0 !important;
+        background: var(--slide-bg) !important;
+        box-sizing: border-box !important;
       }
 
       .slide:last-child {
-        page-break-after: auto;
+        page-break-after: auto !important;
       }
 
       .controls,
@@ -405,8 +416,9 @@
       }
 
       .title-slide {
-        justify-content: center;
-        align-items: center;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
       }
     }
   </style>

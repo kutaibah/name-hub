@@ -14,18 +14,22 @@ async function generatePDF() {
 
   console.log('Launching browser...');
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  
+  // Set viewport to match slide dimensions
+  const page = await browser.newPage({
+    viewport: { width: 1280, height: 720 }
+  });
 
   console.log('Loading HTML...');
   await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle' });
 
-  console.log('Generating PDF...');
+  console.log('Generating PDF (1280x720 landscape)...');
   await page.pdf({
     path: pdfPath,
     width: '1280px',
     height: '720px',
-    landscape: true,
     printBackground: true,
+    preferCSSPageSize: true,
     margin: { top: 0, right: 0, bottom: 0, left: 0 },
   });
 
