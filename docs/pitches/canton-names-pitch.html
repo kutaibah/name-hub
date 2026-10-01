@@ -533,42 +533,60 @@
     <!-- Slide 6: Hardest Problems -->
     <div class="slide" data-slide="6">
       <h1>Hardest Problems Solved</h1>
-      <h3>Safe name-to-party resolution</h3>
-      <ul>
-        <li>Handles nonexistent, expired, unverified, and changed-between-typing-and-sending cases</li>
-        <li>Validates <strong>before</strong> send, not after</li>
-      </ul>
-      <h3>Typed adapter layer</h3>
-      <ul>
-        <li>Zod schemas validate all API responses</li>
-        <li>Demo and live adapters share the same interface</li>
-        <li>Swap adapters without changing UI code</li>
-      </ul>
-      <h3>Registration state machine</h3>
-      <ul>
-        <li>Unit-tested transitions through all states</li>
-        <li>Handles rejection, timeout, and retry cleanly</li>
-      </ul>
+      <div class="two-col" style="margin-top: 0.5rem; gap: 2rem;">
+        <div>
+          <h3 style="margin-top: 0;">Safe name-to-party resolution</h3>
+          <ul style="font-size: 1.1rem;">
+            <li>Handles nonexistent, expired, unverified, changed-between-typing-and-sending</li>
+            <li>Validates <strong>before</strong> send, not after</li>
+          </ul>
+          <h3>Typed adapter layer</h3>
+          <ul style="font-size: 1.1rem;">
+            <li>Zod schemas validate all API responses</li>
+            <li>Demo and live adapters share the same interface</li>
+            <li>Swap adapters without changing UI code</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="margin-top: 0;">Registration state machine</h3>
+          <ul style="font-size: 1.1rem;">
+            <li>Unit-tested transitions through all states</li>
+            <li>Handles rejection, timeout, and retry cleanly</li>
+          </ul>
+          <p style="margin-top: 1.5rem; padding: 1rem; background: var(--accent-light); border-radius: 0.5rem; font-size: 1rem; color: var(--accent);">
+            <strong>18 state machine tests</strong> cover all transitions
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Slide 7: Tech Stack -->
     <div class="slide" data-slide="7">
       <h1>Tech Stack</h1>
-      <table>
-        <tr><th>Layer</th><th>Choice</th></tr>
-        <tr><td>Framework</td><td>Next.js 16 (App Router)</td></tr>
-        <tr><td>Language</td><td>TypeScript (strict)</td></tr>
-        <tr><td>Styling</td><td>Tailwind CSS 4 + shadcn/ui</td></tr>
-        <tr><td>State</td><td>TanStack Query</td></tr>
-        <tr><td>Validation</td><td>Zod</td></tr>
-        <tr><td>QR Codes</td><td>qrcode.react</td></tr>
-        <tr><td>Testing</td><td>Vitest</td></tr>
-      </table>
-      <h3 style="margin-top: 2rem;">Canton APIs</h3>
-      <ul>
-        <li><strong>Scan API</strong> — public lookups (no auth)</li>
-        <li><strong>Validator App ANS API</strong> — registration (JWT auth)</li>
-      </ul>
+      <div class="two-col" style="margin-top: 1rem; gap: 2rem;">
+        <div>
+          <table style="font-size: 1rem;">
+            <tr><th>Layer</th><th>Choice</th></tr>
+            <tr><td>Framework</td><td>Next.js 16 (App Router)</td></tr>
+            <tr><td>UI</td><td>React 19</td></tr>
+            <tr><td>Language</td><td>TypeScript (strict)</td></tr>
+            <tr><td>Styling</td><td>Tailwind CSS 4 + shadcn/ui</td></tr>
+            <tr><td>State</td><td>TanStack Query</td></tr>
+            <tr><td>Validation</td><td>Zod</td></tr>
+            <tr><td>Testing</td><td>Vitest</td></tr>
+            <tr><td>Package Manager</td><td>pnpm</td></tr>
+          </table>
+        </div>
+        <div>
+          <h3 style="margin-top: 0;">Canton APIs</h3>
+          <ul style="font-size: 1.1rem;">
+            <li><strong>Scan API</strong><br><span style="color: var(--muted);">Public lookups (no auth)</span></li>
+            <li style="margin-top: 1rem;"><strong>Validator App ANS API</strong><br><span style="color: var(--muted);">Registration (JWT auth)</span></li>
+          </ul>
+          <h3 style="margin-top: 1.5rem;">Also using</h3>
+          <p style="font-size: 1rem; color: var(--muted);">qrcode.react for QR codes</p>
+        </div>
+      </div>
     </div>
 
     <!-- Slide 8: Validation -->
@@ -625,17 +643,26 @@
     <!-- Slide 10: Metrics -->
     <div class="slide" data-slide="10">
       <h1>Pilot Metrics (Planned)</h1>
-      <table>
-        <tr><th>Metric</th><th>Purpose</th></tr>
-        <tr><td>Registration completion rate</td><td>Funnel health</td></tr>
-        <tr><td>Time to register</td><td>UX friction</td></tr>
-        <tr><td>Failure points by step</td><td>Where users drop off</td></tr>
-        <tr><td>Resolver lookups</td><td>Component adoption</td></tr>
-        <tr><td>Recipient error reduction</td><td>Safety impact</td></tr>
-        <tr><td>Renewal rate</td><td>Retention signal</td></tr>
-        <tr><td>Integration time</td><td>Developer experience</td></tr>
-      </table>
-      <p style="margin-top: 1.5rem; font-style: italic;">No data yet — we need integrations to collect it.</p>
+      <div class="two-col" style="margin-top: 0.5rem; gap: 2rem;">
+        <div>
+          <table style="font-size: 0.95rem;">
+            <tr><th>Metric</th><th>Purpose</th></tr>
+            <tr><td>Registration completion rate</td><td>Funnel health</td></tr>
+            <tr><td>Time to register</td><td>UX friction</td></tr>
+            <tr><td>Failure points by step</td><td>Drop-off analysis</td></tr>
+            <tr><td>Resolver lookups</td><td>Component adoption</td></tr>
+          </table>
+        </div>
+        <div>
+          <table style="font-size: 0.95rem;">
+            <tr><th>Metric</th><th>Purpose</th></tr>
+            <tr><td>Recipient error reduction</td><td>Safety impact</td></tr>
+            <tr><td>Renewal rate</td><td>Retention signal</td></tr>
+            <tr><td>Integration time</td><td>Developer experience</td></tr>
+          </table>
+          <p style="margin-top: 1rem; font-style: italic; font-size: 1rem; color: var(--muted);">No data yet — we need integrations to collect it.</p>
+        </div>
+      </div>
     </div>
 
     <!-- Slide 11: Roadmap -->
