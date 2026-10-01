@@ -7,7 +7,13 @@ Hackathon pitch materials for Canton Names.
 | File | Format | Purpose |
 |------|--------|---------|
 | `canton-names-pitch.md` | Markdown | Source deck with speaker notes |
-| `canton-names-pitch.html` | HTML | Presentable slide deck |
+| `canton-names-pitch.html` | HTML | Source presentable deck |
+
+## Deployment
+
+The pitch deck is served at `/pitch` on the deployed site.
+
+During build, `canton-names-pitch.html` is copied to `public/pitch/index.html` via the `prebuild` script in `package.json`. Edit the source here (`docs/pitches/canton-names-pitch.html`), and the deployed version will update on next build.
 
 ## Presenting
 

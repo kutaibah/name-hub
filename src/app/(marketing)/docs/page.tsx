@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { siteConfig, hasGitHubUrl } from '@/config/site';
-import { ArrowRight, ExternalLink, Book, Code, Terminal, Zap } from 'lucide-react';
+import { ArrowRight, ExternalLink, Book, Code, Terminal, Zap, Presentation } from 'lucide-react';
 
 export const metadata = {
   title: 'Documentation',
@@ -47,6 +47,13 @@ export default function DocsPage() {
           description="See real-world integration patterns."
           href="/app/demo/recipient"
           linkText="Browse Examples"
+        />
+        <DocCard
+          icon={<Presentation className="h-6 w-6" />}
+          title="Pitch Deck"
+          description="12-slide presentation covering problem, solution, and roadmap."
+          href="/pitch"
+          linkText="View Pitch Deck"
         />
       </div>
 
