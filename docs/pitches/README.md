@@ -12,14 +12,14 @@ Hackathon pitch materials for Canton Names.
 
 **Served at:** `/pitch`
 
-## Judge Pitch Deck (7 slides, ~60s)
+## Judge Pitch Deck (8 slides, ~60s)
 
 | File | Format | Purpose |
 |------|--------|---------|
 | `pitch-judges/script.md` | Markdown | Verbatim script with timing |
 | `pitch-judges/pitch-judges.md` | Markdown | Slide source with speaker notes |
 | `pitch-judges/pitch-judges.html` | HTML | Source presentable deck |
-| `pitch-judges/pitch-judges.pdf` | PDF | Printable version (7 pages, 16:9) |
+| `pitch-judges/pitch-judges.pdf` | PDF | Printable version (8 pages, 16:9) |
 
 **Served at:** `/pitch-judges`
 
