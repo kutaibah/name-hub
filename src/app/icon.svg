@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="favicon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="14" fill="url(#favicon-gradient)"/>
+  
+  <!-- Simplified trail for small sizes: 1 dot + 1 dash + arrow + tag -->
+  <circle cx="12" cy="32" r="3" fill="white"/>
+  <rect x="19" y="29" width="8" height="6" rx="2" fill="white"/>
+  <path d="M30 26 L38 32 L30 38 Z" fill="white"/>
+  
+  <!-- Simplified name tag -->
+  <g transform="translate(50, 32) rotate(45)">
+    <path d="M-6 -8 L7 -8 L7 8 L-6 8 L-11 0 Z" fill="white"/>
+    <circle cx="2" cy="0" r="2.5" fill="url(#favicon-gradient)"/>
+  </g>
+</svg>

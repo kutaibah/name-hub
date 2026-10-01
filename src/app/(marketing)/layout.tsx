@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { siteConfig, hasGitHubUrl } from '@/config/site';
@@ -15,9 +16,14 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">
-                CN
-              </div>
+              <Image
+                src="/logo.svg"
+                alt="Canton Names"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+                priority
+              />
               <span className="font-semibold text-gray-900">{siteConfig.name}</span>
             </Link>
             
@@ -106,9 +112,13 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
             <div>
               <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-xs">
-                  CN
-                </div>
+                <Image
+                  src="/logo.svg"
+                  alt="Canton Names"
+                  width={28}
+                  height={28}
+                  className="h-7 w-7"
+                />
                 <span className="font-semibold text-gray-900">{siteConfig.name}</span>
               </Link>
               <p className="mt-2 text-sm text-gray-500 max-w-xs">

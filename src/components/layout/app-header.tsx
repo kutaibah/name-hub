@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Search, User, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
@@ -33,9 +34,14 @@ export function AppHeader() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/app" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg">
-                CN
-              </div>
+              <Image
+                src="/logo.svg"
+                alt="Canton Names"
+                width={36}
+                height={36}
+                className="h-9 w-9"
+                priority
+              />
               <span className="hidden sm:block font-semibold text-lg">Canton Names</span>
             </Link>
             
