@@ -14,12 +14,24 @@ async function captureHeader() {
     viewport: { width: 1280, height: 800 }
   });
 
-  console.log('Loading landing page...');
-  await page.goto('http://127.0.0.1:3847/', { waitUntil: 'networkidle' });
+  console.log('Loading landing page (production build)...');
+  await page.goto('http://127.0.0.1:3847/', { 
+    waitUntil: 'networkidle',
+    timeout: 30000
+  });
 
-  console.log('Taking screenshot of header...');
-  const header = await page.locator('header').first();
-  await header.screenshot({ path: outputPath });
+  // Extra wait to ensure all assets are loaded
+  await page.waitForTimeout(2000);
+  
+  // Wait for the logo image to be loaded
+  await page.waitForSelector('header img[alt="Canton Names"]', { state: 'visible', timeout: 10000 });
+  
+  console.log('Taking screenshot of header and hero...');
+  // Capture the top portion of the page (header + hero)
+  await page.screenshot({ 
+    path: outputPath,
+    clip: { x: 0, y: 0, width: 1280, height: 600 }
+  });
 
   await browser.close();
   console.log(`Screenshot saved to: ${outputPath}`);

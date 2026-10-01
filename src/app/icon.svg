@@ -9,14 +9,14 @@
   <!-- Rounded square background -->
   <rect width="64" height="64" rx="14" fill="url(#favicon-gradient)"/>
   
-  <!-- Simplified trail for small sizes: 1 dot + 1 dash + arrow + tag -->
+  <!-- Simplified for small sizes: 1 dot, 1 dash, arrow, tag -->
   <circle cx="12" cy="32" r="3" fill="white"/>
-  <rect x="19" y="29" width="8" height="6" rx="2" fill="white"/>
-  <path d="M30 26 L38 32 L30 38 Z" fill="white"/>
+  <rect x="20" y="29" width="8" height="6" rx="2" fill="white"/>
+  
+  <!-- Arrow -->
+  <path d="M32 26 L40 32 L32 38 Z" fill="white"/>
   
   <!-- Simplified name tag -->
-  <g transform="translate(50, 32) rotate(45)">
-    <path d="M-6 -8 L7 -8 L7 8 L-6 8 L-11 0 Z" fill="white"/>
-    <circle cx="2" cy="0" r="2.5" fill="url(#favicon-gradient)"/>
-  </g>
+  <path d="M44 26 L58 26 Q60 26 60 28 L60 36 Q60 38 58 38 L44 38 L40 32 Z" fill="white"/>
+  <circle cx="54" cy="32" r="3" fill="url(#favicon-gradient)"/>
 </svg>
