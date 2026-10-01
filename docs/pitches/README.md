@@ -8,12 +8,23 @@ Hackathon pitch materials for Canton Names.
 |------|--------|---------|
 | `canton-names-pitch.md` | Markdown | Source deck with speaker notes |
 | `canton-names-pitch.html` | HTML | Source presentable deck |
+| `canton-names-pitch.pdf` | PDF | Printable version (12 pages, 16:9) |
 
 ## Deployment
 
 The pitch deck is served at `/pitch` on the deployed site.
 
 During build, `canton-names-pitch.html` is copied to `public/pitch/index.html` via the `prebuild` script in `package.json`. Edit the source here (`docs/pitches/canton-names-pitch.html`), and the deployed version will update on next build.
+
+## Regenerating the PDF
+
+To regenerate the PDF after editing the HTML:
+
+```bash
+node scripts/generate-pdf.mjs
+```
+
+This requires Playwright (`pnpm add -D playwright && npx playwright install chromium`).
 
 ## Presenting
 

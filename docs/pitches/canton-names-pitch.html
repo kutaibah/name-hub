@@ -360,6 +360,55 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media print {
+      @page {
+        size: 1280px 720px landscape;
+        margin: 0;
+      }
+
+      html, body {
+        width: 1280px;
+        height: 720px;
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .deck {
+        height: auto;
+        overflow: visible;
+      }
+
+      .slide {
+        position: relative !important;
+        display: flex !important;
+        width: 1280px !important;
+        height: 720px !important;
+        page-break-after: always;
+        page-break-inside: avoid;
+        break-after: page;
+        break-inside: avoid;
+        overflow: hidden !important;
+        padding: 3rem 5rem !important;
+      }
+
+      .slide:last-child {
+        page-break-after: auto;
+      }
+
+      .controls,
+      .slide-number,
+      .progress {
+        display: none !important;
+      }
+
+      .title-slide {
+        justify-content: center;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
