@@ -2,13 +2,13 @@
 
 Hackathon pitch materials for Canton Names.
 
-## Full Pitch Deck (12 slides)
+## Full Pitch Deck (13 slides)
 
 | File | Format | Purpose |
 |------|--------|---------|
 | `canton-names-pitch.md` | Markdown | Source deck with speaker notes |
 | `canton-names-pitch.html` | HTML | Source presentable deck |
-| `canton-names-pitch.pdf` | PDF | Printable version (12 pages, 16:9) |
+| `canton-names-pitch.pdf` | PDF | Printable version (13 pages, 16:9) |
 
 **Served at:** `/pitch`
 
@@ -80,7 +80,8 @@ Slides are separated by `---` dividers.
 9. **Go-to-Market** — Developer-first, first 10/100 targets
 10. **Pilot Metrics** — Planned measurements
 11. **Roadmap** — What's not built yet
-12. **The Ask** — Network access + one pilot partner
+12. **Business Model** — Revenue plan (verified names, paid resolver, fees, grants)
+13. **The Ask** — Network access + one pilot partner
 
 ## Design
 
