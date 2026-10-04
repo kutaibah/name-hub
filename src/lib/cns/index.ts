@@ -30,6 +30,9 @@ export {
   ResolveResultSchema,
   ReasonCodeSchema,
   ResolveStatusSchema,
+  CNS_SUFFIX,
+  CNS_SUFFIX_UNVERIFIED,
+  CNS_SUFFIX_VERIFIED,
 } from './resolve-contract';
 export {
   DemoResolver,
@@ -37,4 +40,6 @@ export {
   getResolver,
   resetResolver,
   validateResolveResult,
+  validateDemoEntries,
+  DEMO_ENTRIES,
 } from './resolvers';

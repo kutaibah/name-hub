@@ -40,7 +40,7 @@ function TransferForm() {
 }`;
 
 const DEMO_NAMES = [
-  { name: 'bank', label: 'bank.unverified.cns', description: 'Verified identity → ok', status: 'ok' },
+  { name: 'bank', label: 'bank.cns', description: 'Verified identity → ok', status: 'ok' },
   { name: 'alice', label: 'alice.unverified.cns', description: 'Unverified → confirm', status: 'unverified' },
   { name: 'changed-party', label: 'changed-party.unverified.cns', description: 'Party changed → confirm', status: 'changed' },
   { name: 'expired-name', label: 'expired-name.unverified.cns', description: 'Expired → blocked', status: 'expired' },

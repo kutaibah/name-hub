@@ -178,14 +178,19 @@ function TransferForm() {
 
 Demo mode includes seeded entries for all states:
 
-| Name | Status | Description |
-|------|--------|-------------|
-| `alice` | `unverified` | Standard unverified name |
-| `bob` | `unverified` | Another unverified name |
-| `bank` | `ok` | Verified identity (demo only) |
-| `expired-name` | `expired` | Expired name |
-| `changed-party` | `changed` | Party ID changed |
-| `nonexistent` | `missing` | Name not found |
+| Name | Full Name | Status | Description |
+|------|-----------|--------|-------------|
+| `alice` | `alice.unverified.cns` | `unverified` | Standard unverified name |
+| `bob` | `bob.unverified.cns` | `unverified` | Another unverified name |
+| `bank` | `bank.cns` | `ok` | Verified identity |
+| `expired-name` | `expired-name.unverified.cns` | `expired` | Expired name |
+| `changed-party` | `changed-party.unverified.cns` | `changed` | Party ID changed |
+| `nonexistent` | N/A | `missing` | Name not found |
+
+**Naming convention:**
+- Verified names use the `.cns` suffix (e.g., `bank.cns`)
+- Unverified names use the `.unverified.cns` suffix (e.g., `alice.unverified.cns`)
+- When you type just the base name (e.g., `bank`), the resolver checks for both verified and unverified variants
 
 ## Zod Schemas
 

@@ -14,24 +14,28 @@ const SCREENSHOTS = [
     name: 'bank',
     file: 'recipient-ok.png',
     expectedBadge: 'Verified',
+    expectedName: 'bank.cns',
     description: 'OK/Verified status',
   },
   {
     name: 'alice',
     file: 'recipient-confirm.png',
     expectedBadge: 'Unverified',
+    expectedName: 'alice.unverified.cns',
     description: 'Unverified status (needs confirmation)',
   },
   {
     name: 'changed-party',
     file: 'recipient-changed.png',
     expectedBadge: 'Changed',
+    expectedName: 'changed-party.unverified.cns',
     description: 'Changed party ID status',
   },
   {
     name: 'expired-name',
     file: 'recipient-blocked.png',
     expectedBadge: 'Expired',
+    expectedName: 'expired-name.unverified.cns',
     description: 'Expired/blocked status',
   },
 ];
@@ -89,16 +93,18 @@ async function main() {
     const cardText = await card.textContent();
     const hasInput = cardText?.includes('Recipient');
     const hasBadge = cardText?.includes(screenshot.expectedBadge);
+    const hasName = cardText?.includes(screenshot.expectedName);
     const hasSendButton = cardText?.includes('Send Transfer');
     const hasAmount = cardText?.includes('Amount');
 
     console.log(`  Verification:`);
     console.log(`    - Has Recipient label: ${hasInput}`);
     console.log(`    - Has ${screenshot.expectedBadge} badge: ${hasBadge}`);
+    console.log(`    - Has name ${screenshot.expectedName}: ${hasName}`);
     console.log(`    - Has Amount field: ${hasAmount}`);
     console.log(`    - Has Send Transfer button: ${hasSendButton}`);
 
-    if (!hasInput || !hasBadge || !hasSendButton || !hasAmount) {
+    if (!hasInput || !hasBadge || !hasName || !hasSendButton || !hasAmount) {
       console.error(`  WARNING: Some elements may be missing!`);
     }
   }

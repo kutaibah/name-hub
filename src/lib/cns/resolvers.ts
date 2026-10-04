@@ -11,7 +11,8 @@ import {
   getCachedLastKnown,
   setCachedLastKnown,
   ResolveResultSchema,
-  CNS_SUFFIX,
+  CNS_SUFFIX_UNVERIFIED,
+  CNS_SUFFIX_VERIFIED,
 } from './resolve-contract';
 import { cnsConfig } from './config';
 import { LookupEntryByNameResponseSchema } from './types';
@@ -69,12 +70,12 @@ export const DEMO_ENTRIES: Record<string, DemoEntry> = {
     expiresAt: futureDate(365),
     description: 'Canton Developer Resources',
   },
-  'bank.unverified.cns': {
-    name: 'bank.unverified.cns',
+  'bank.cns': {
+    name: 'bank.cns',
     partyId: 'acme-bank::1220abcdef123456789012345678901234567890123456789012345678901234abcd',
     verified: true,
     expiresAt: futureDate(365),
-    description: 'Verified bank identity (demo shows verified=true for illustration)',
+    description: 'Verified bank identity',
   },
   'expired-name.unverified.cns': {
     name: 'expired-name.unverified.cns',
@@ -91,6 +92,28 @@ export const DEMO_ENTRIES: Record<string, DemoEntry> = {
     description: 'Party ID changed from previous owner',
   },
 };
+
+/**
+ * Validates that demo entries are consistent:
+ * - Verified names must NOT have the .unverified.cns suffix
+ * - Unverified names MUST have the .unverified.cns suffix
+ */
+export function validateDemoEntries(): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  for (const [key, entry] of Object.entries(DEMO_ENTRIES)) {
+    const hasUnverifiedSuffix = entry.name.endsWith(CNS_SUFFIX_UNVERIFIED);
+    if (entry.verified && hasUnverifiedSuffix) {
+      errors.push(`Entry "${key}": verified=true but name has .unverified.cns suffix`);
+    }
+    if (!entry.verified && !hasUnverifiedSuffix) {
+      errors.push(`Entry "${key}": verified=false but name lacks .unverified.cns suffix`);
+    }
+    if (key !== entry.name) {
+      errors.push(`Entry key "${key}" doesn't match entry.name "${entry.name}"`);
+    }
+  }
+  return { valid: errors.length === 0, errors };
+}
 
 /**
  * Demo party ID to name mapping for reverse lookups.
@@ -157,7 +180,20 @@ export class DemoResolver implements Resolver {
       return createMissingResult(input, 'INVALID_INPUT', source, input.normalized);
     }
 
-    const entry = DEMO_ENTRIES[input.normalized];
+    // Try to find the entry - check both normalized name and verified variant
+    let entry = DEMO_ENTRIES[input.normalized];
+    let resolvedName = input.normalized;
+    
+    // If not found and input was normalized to .unverified.cns, also check .cns (verified)
+    if (!entry && input.normalized.endsWith(CNS_SUFFIX_UNVERIFIED)) {
+      const baseName = input.normalized.slice(0, -CNS_SUFFIX_UNVERIFIED.length);
+      const verifiedName = `${baseName}${CNS_SUFFIX_VERIFIED}`;
+      entry = DEMO_ENTRIES[verifiedName];
+      if (entry) {
+        resolvedName = verifiedName;
+      }
+    }
+    
     if (!entry) {
       return createMissingResult(input, 'NAME_NOT_FOUND', source, input.normalized);
     }
@@ -168,13 +204,13 @@ export class DemoResolver implements Resolver {
     }
 
     // Check for party change
-    const lastKnown = opts?.lastKnown ?? getCachedLastKnown(input.normalized);
+    const lastKnown = opts?.lastKnown ?? getCachedLastKnown(resolvedName);
     const knownPartyId = opts?.knownPartyId ?? lastKnown?.partyId;
 
     // Special handling for changed-party demo: simulate old cached value
-    if (input.normalized === 'changed-party.unverified.cns' && !knownPartyId) {
+    if (resolvedName === 'changed-party.unverified.cns' && !knownPartyId) {
       // First time seeing this name, cache the "old" party ID to demonstrate change
-      setCachedLastKnown(input.normalized, CHANGED_PARTY_OLD_ID);
+      setCachedLastKnown(resolvedName, CHANGED_PARTY_OLD_ID);
       return createChangedResult(
         input,
         entry.partyId,
@@ -199,7 +235,7 @@ export class DemoResolver implements Resolver {
     }
 
     // Cache for future change detection
-    setCachedLastKnown(input.normalized, entry.partyId);
+    setCachedLastKnown(resolvedName, entry.partyId);
 
     // Verified names are OK
     if (entry.verified) {
@@ -256,7 +292,7 @@ export class LiveResolver implements Resolver {
         const name = entry.name;
         const partyId = entry.user;
         const expiresAt = entry.expires_at ?? null;
-        const verified = !name.endsWith(CNS_SUFFIX);
+        const verified = !name.endsWith(CNS_SUFFIX_UNVERIFIED);
 
         if (expiresAt && new Date(expiresAt) < new Date()) {
           return createExpiredResult(input, name, verified, expiresAt, source);
@@ -304,7 +340,7 @@ export class LiveResolver implements Resolver {
       const entry = parsed.data.entry;
       const partyId = entry.user;
       const expiresAt = entry.expires_at ?? null;
-      const verified = !entry.name.endsWith(CNS_SUFFIX);
+      const verified = !entry.name.endsWith(CNS_SUFFIX_UNVERIFIED);
 
       // Check if expired
       if (expiresAt && new Date(expiresAt) < new Date()) {

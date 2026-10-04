@@ -205,7 +205,17 @@ export interface Resolver {
 /**
  * CNS name suffix for unverified names.
  */
-export const CNS_SUFFIX = '.unverified.cns';
+export const CNS_SUFFIX_UNVERIFIED = '.unverified.cns';
+
+/**
+ * CNS name suffix for verified names.
+ */
+export const CNS_SUFFIX_VERIFIED = '.cns';
+
+/**
+ * @deprecated Use CNS_SUFFIX_UNVERIFIED instead
+ */
+export const CNS_SUFFIX = CNS_SUFFIX_UNVERIFIED;
 
 /**
  * Pattern for valid CNS names (without suffix).
@@ -232,6 +242,8 @@ export function detectInputKind(input: string): InputKind {
 /**
  * Normalizes input based on its kind.
  * - Names: lowercase, trim, ensure suffix
+ *   - If already has .cns or .unverified.cns suffix, keep it
+ *   - Otherwise, append .unverified.cns (default lookup)
  * - Party IDs: trim only (case-sensitive)
  */
 export function normalizeInput(input: string, kind: InputKind): string {
@@ -240,9 +252,12 @@ export function normalizeInput(input: string, kind: InputKind): string {
     return trimmed;
   }
   let normalized = trimmed.toLowerCase();
-  if (!normalized.endsWith(CNS_SUFFIX)) {
-    normalized = `${normalized}${CNS_SUFFIX}`;
+  // If already has a .cns suffix (verified or unverified), keep it
+  if (normalized.endsWith(CNS_SUFFIX_VERIFIED)) {
+    return normalized;
   }
+  // Otherwise, default to unverified suffix for lookup
+  normalized = `${normalized}${CNS_SUFFIX_UNVERIFIED}`;
   return normalized;
 }
 
@@ -260,8 +275,11 @@ export function parseInput(raw: string): ResolveInput {
  */
 export function validateCnsName(name: string): { valid: true } | { valid: false; reason: string } {
   let baseName = name.trim().toLowerCase();
-  if (baseName.endsWith(CNS_SUFFIX)) {
-    baseName = baseName.slice(0, -CNS_SUFFIX.length);
+  // Strip both verified and unverified suffixes (check unverified first as it's longer)
+  if (baseName.endsWith(CNS_SUFFIX_UNVERIFIED)) {
+    baseName = baseName.slice(0, -CNS_SUFFIX_UNVERIFIED.length);
+  } else if (baseName.endsWith(CNS_SUFFIX_VERIFIED)) {
+    baseName = baseName.slice(0, -CNS_SUFFIX_VERIFIED.length);
   }
 
   if (baseName.length < 3) {

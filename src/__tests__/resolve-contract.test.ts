@@ -20,7 +20,8 @@ import {
   setCachedLastKnown,
   clearCachedLastKnown,
 } from '@/lib/cns/resolve-contract';
-import { DemoResolver, validateResolveResult } from '@/lib/cns/resolvers';
+import { DemoResolver, validateResolveResult, validateDemoEntries, DEMO_ENTRIES } from '@/lib/cns/resolvers';
+import { CNS_SUFFIX_UNVERIFIED } from '@/lib/cns/resolve-contract';
 
 describe('Resolve Contract Schemas', () => {
   describe('ReasonCodeSchema', () => {
@@ -85,11 +86,17 @@ describe('Input Detection and Normalization', () => {
   });
 
   describe('normalizeInput', () => {
-    it('normalizes names to lowercase with suffix', () => {
+    it('normalizes names to lowercase with .unverified.cns suffix by default', () => {
       expect(normalizeInput('Alice', 'name')).toBe('alice.unverified.cns');
       expect(normalizeInput('ALICE', 'name')).toBe('alice.unverified.cns');
       expect(normalizeInput('alice.unverified.cns', 'name')).toBe('alice.unverified.cns');
       expect(normalizeInput('  alice  ', 'name')).toBe('alice.unverified.cns');
+    });
+
+    it('preserves .cns suffix for verified names', () => {
+      expect(normalizeInput('bank.cns', 'name')).toBe('bank.cns');
+      expect(normalizeInput('BANK.CnS', 'name')).toBe('bank.cns');
+      expect(normalizeInput('  bank.cns  ', 'name')).toBe('bank.cns');
     });
 
     it('preserves party ID case', () => {
@@ -344,6 +351,54 @@ describe('DemoResolver', () => {
       for (const name of names) {
         const result = await resolver.resolve(name);
         expect(() => validateResolveResult(result)).not.toThrow();
+      }
+    });
+  });
+
+  describe('Verified name resolution', () => {
+    it('resolves bank (base name) to verified ok status', async () => {
+      const result = await resolver.resolve('bank');
+      expect(result.status).toBe('ok');
+      expect(result.verified).toBe(true);
+      expect(result.name).toBe('bank.cns');
+      expect(result.reasonCode).toBe('OK');
+      validateResolveResult(result);
+    });
+
+    it('resolves bank.cns (full name) to verified ok status', async () => {
+      const result = await resolver.resolve('bank.cns');
+      expect(result.status).toBe('ok');
+      expect(result.verified).toBe(true);
+      expect(result.name).toBe('bank.cns');
+      expect(result.reasonCode).toBe('OK');
+      validateResolveResult(result);
+    });
+
+    it('verified names do not have .unverified.cns suffix', () => {
+      for (const [key, entry] of Object.entries(DEMO_ENTRIES)) {
+        if (entry.verified) {
+          expect(entry.name.endsWith(CNS_SUFFIX_UNVERIFIED)).toBe(false);
+          expect(key.endsWith(CNS_SUFFIX_UNVERIFIED)).toBe(false);
+        }
+      }
+    });
+  });
+
+  describe('Demo entries consistency', () => {
+    it('validateDemoEntries returns valid for current demo entries', () => {
+      const validation = validateDemoEntries();
+      expect(validation.valid).toBe(true);
+      expect(validation.errors).toEqual([]);
+    });
+
+    it('verified entries use .cns suffix, unverified use .unverified.cns suffix', () => {
+      for (const [key, entry] of Object.entries(DEMO_ENTRIES)) {
+        if (entry.verified) {
+          expect(entry.name).toMatch(/\.cns$/);
+          expect(entry.name).not.toMatch(/\.unverified\.cns$/);
+        } else {
+          expect(entry.name).toMatch(/\.unverified\.cns$/);
+        }
       }
     });
   });
