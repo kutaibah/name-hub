@@ -1,10 +1,10 @@
 import Link from 'next/link';
+import { ArrowRight, ExternalLink, Presentation, PlayCircle } from 'lucide-react';
 import { siteConfig, hasGitHubUrl } from '@/config/site';
-import { ArrowRight, ExternalLink, Book, Code, Terminal, Zap, Presentation } from 'lucide-react';
 
 export const metadata = {
-  title: 'Documentation',
-  description: 'Learn how to integrate Canton Names into your application.',
+  title: 'Documentation - 5-Minute Quickstart',
+  description: 'Integrate safe recipient resolution into your Canton app in 5 minutes.',
 };
 
 export default function DocsPage() {
@@ -13,163 +13,285 @@ export default function DocsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-16 sm:py-24">
       <div className="mb-12">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900">Documentation</h1>
-        <p className="mt-4 text-lg text-gray-600">
-          Everything you need to integrate Canton Names into your Canton Network application.
+        <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 mb-2">5-Minute Quickstart</p>
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Safe Recipient Resolution</h1>
+        <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+          Add name resolution to your Canton app with a drop-in component and typed resolver.
         </p>
+        <div className="mt-6 flex gap-4">
+          <Link
+            href="/app/demo/recipient"
+            className="inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+          >
+            <PlayCircle className="mr-1.5 h-4 w-4" />
+            Try the demo
+          </Link>
+          <Link
+            href="/pitch"
+            className="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:underline"
+          >
+            <Presentation className="mr-1.5 h-4 w-4" />
+            View pitch deck
+          </Link>
+        </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 mb-12">
-        <DocCard
-          icon={<Book className="h-6 w-6" />}
-          title="Quick Start"
-          description="Get up and running with Canton Names in minutes."
-          href="/app"
-          linkText="Try the App"
-        />
-        <DocCard
-          icon={<Code className="h-6 w-6" />}
-          title="Integration Guide"
-          description="Add the CnsRecipientInput component to your app."
-          href="/app/demo/recipient"
-          linkText="View Demo"
-        />
-        <DocCard
-          icon={<Terminal className="h-6 w-6" />}
-          title="API Reference"
-          description="Explore the Scan API for name resolution."
-          href="/app/demo/recipient"
-          linkText="View API Usage"
-        />
-        <DocCard
-          icon={<Zap className="h-6 w-6" />}
-          title="Examples"
-          description="See real-world integration patterns."
-          href="/app/demo/recipient"
-          linkText="Browse Examples"
-        />
-        <DocCard
-          icon={<Presentation className="h-6 w-6" />}
-          title="Pitch Deck"
-          description="12-slide presentation covering problem, solution, and roadmap."
-          href="/pitch"
-          linkText="View Pitch Deck"
-        />
-        <DocCard
-          icon={<Presentation className="h-6 w-6" />}
-          title="Judge Pitch"
-          description="7-slide condensed pitch for hackathon judges (~60 seconds)."
-          href="/pitch-judges"
-          linkText="View Judge Pitch"
-        />
-      </div>
-
+      {/* Step 1: Install */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">Understanding CNS Names</h2>
-        
-        <div className="prose prose-gray max-w-none">
-          <p className="text-gray-600">
-            Canton Names (CNS) provides human-readable aliases for Canton Network party IDs.
-            All user-registered names include the <code className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-800">.unverified.cns</code> suffix
-            to indicate they have not undergone real-world identity verification.
-          </p>
-
-          <h3 className="text-xl font-semibold mt-8 mb-4 text-gray-900">Name Format</h3>
-          <ul className="space-y-2 text-gray-600">
-            <li className="flex items-start gap-2">
-              <span className="text-indigo-600 mt-1">•</span>
-              Names are 3-60 characters, lowercase alphanumeric with hyphens
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-indigo-600 mt-1">•</span>
-              Must start and end with a letter or number
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-indigo-600 mt-1">•</span>
-              No consecutive hyphens allowed
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-indigo-600 mt-1">•</span>
-              Example: <code className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-800">alice.unverified.cns</code>
-            </li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mt-8 mb-4 text-gray-900">Resolution</h3>
-          <p className="text-gray-600">
-            Names can be resolved to party IDs using the public Scan API. No authentication
-            is required for lookups—anyone can resolve any name.
-          </p>
-
-          <div className="mt-4 rounded-xl bg-slate-900 p-4 overflow-x-auto">
-            <pre className="text-sm text-slate-100">
-              <code>{`GET /api/scan/v0/ans-entries/by-name/{name}
-
-Response:
-{
-  "name": "alice.unverified.cns",
-  "party_id": "::1220abc...",
-  "expires_at": "2025-12-31T23:59:59Z"
-}`}</code>
-            </pre>
-          </div>
-
-          <h3 className="text-xl font-semibold mt-8 mb-4 text-gray-900">Registration</h3>
-          <p className="text-gray-600">
-            To register a name, users must connect a Canton wallet and pay a small
-            Canton Coin fee. The registration process involves:
-          </p>
-          <ol className="space-y-2 text-gray-600 list-decimal list-inside mt-4">
-            <li>Submitting a registration request via the ANS API</li>
-            <li>Approving a subscription payment in your wallet</li>
-            <li>Waiting for DSO automation to confirm the entry</li>
-          </ol>
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">1. Install</h2>
+        <div className="rounded-xl bg-slate-900 p-4 overflow-x-auto">
+          <pre className="text-sm text-slate-100">
+            <code>{`npm install @canton-names/resolver
+# or copy CnsRecipientInput from the demo`}</code>
+          </pre>
         </div>
       </section>
 
+      {/* Step 2: Integrate */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">Integration Component</h2>
-        
-        <p className="text-gray-600 mb-6">
-          The <code className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-800">CnsRecipientInput</code> component
-          provides a drop-in recipient field with name resolution, validation, and party ID fallback.
-        </p>
-
-        <div className="rounded-xl bg-slate-900 p-4 overflow-x-auto mb-6">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">2. Drop in the component</h2>
+        <div className="rounded-xl bg-slate-900 p-4 overflow-x-auto mb-4">
           <pre className="text-sm text-slate-100">
             <code>{`import { CnsRecipientInput } from '@/components/cns/cns-recipient-input';
+import type { ResolveResult } from '@/lib/cns/resolve-contract';
 
-function PaymentForm() {
-  const [recipient, setRecipient] = useState<{
-    partyId: string;
-    displayName: string;
-  } | null>(null);
+function TransferForm() {
+  const [usablePartyId, setUsablePartyId] = useState<string | null>(null);
 
   return (
-    <CnsRecipientInput
-      onResolved={(partyId, name) => setRecipient({
-        partyId,
-        displayName: name || partyId.slice(0, 16) + '...'
-      })}
-      onCleared={() => setRecipient(null)}
-    />
+    <form onSubmit={handleTransfer}>
+      <CnsRecipientInput
+        label="Recipient"
+        description="Enter a CNS name or party ID"
+        onResolve={(result: ResolveResult) => console.log(result)}
+        onChange={({ partyId }) => setUsablePartyId(partyId)}
+      />
+      
+      <button type="submit" disabled={!usablePartyId}>
+        Send Transfer
+      </button>
+    </form>
   );
 }`}</code>
           </pre>
         </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          The <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-indigo-600 dark:text-indigo-400">partyId</code> callback 
+          only fires when the resolution is safe to use — either OK status, or confirmed by the user.
+        </p>
+      </section>
 
+      {/* Step 3: Or use the resolver directly */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">3. Or use the resolver directly</h2>
+        <div className="rounded-xl bg-slate-900 p-4 overflow-x-auto mb-4">
+          <pre className="text-sm text-slate-100">
+            <code>{`import { getResolver, type ResolveResult } from '@/lib/cns';
+
+const resolver = getResolver();
+const result: ResolveResult = await resolver.resolve('alice');
+
+if (result.status === 'ok') {
+  // Safe to use immediately
+  sendTransfer(result.partyId);
+} else if (result.requiresConfirmation) {
+  // Show warning, wait for user confirmation
+  showWarning(result.reasonCode);
+} else if (result.blocking) {
+  // Cannot proceed
+  showError(result.reasonCode);
+}`}</code>
+          </pre>
+        </div>
+      </section>
+
+      {/* Status Table */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">Status Table</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 dark:border-gray-700">
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Status</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">partyId</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">requiresConfirmation</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">blocking</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">UI Behavior</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-600 dark:text-gray-300">
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-3 px-4"><code className="text-green-600">ok</code></td>
+                <td className="py-3 px-4">✓</td>
+                <td className="py-3 px-4">false</td>
+                <td className="py-3 px-4">false</td>
+                <td className="py-3 px-4">Usable immediately</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-3 px-4"><code className="text-amber-600">unverified</code></td>
+                <td className="py-3 px-4">✓</td>
+                <td className="py-3 px-4 text-amber-600 font-medium">true</td>
+                <td className="py-3 px-4">false</td>
+                <td className="py-3 px-4">Show warning, require confirmation</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-3 px-4"><code className="text-orange-600">changed</code></td>
+                <td className="py-3 px-4">✓</td>
+                <td className="py-3 px-4 text-amber-600 font-medium">true</td>
+                <td className="py-3 px-4">false</td>
+                <td className="py-3 px-4">Show warning with old/new, require confirmation</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-3 px-4"><code className="text-red-600">expired</code></td>
+                <td className="py-3 px-4">null</td>
+                <td className="py-3 px-4">false</td>
+                <td className="py-3 px-4 text-red-600 font-medium">true</td>
+                <td className="py-3 px-4">Show error, disable submit</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4"><code className="text-red-600">missing</code></td>
+                <td className="py-3 px-4">null</td>
+                <td className="py-3 px-4">false</td>
+                <td className="py-3 px-4 text-red-600 font-medium">true</td>
+                <td className="py-3 px-4">Show error, disable submit</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Reason Codes */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">Reason Codes</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 dark:border-gray-700">
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Code</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Status</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Description</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-600 dark:text-gray-300 font-mono text-xs">
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">OK</td>
+                <td className="py-2 px-4">ok</td>
+                <td className="py-2 px-4 font-sans text-sm">Name resolved successfully</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">INVALID_INPUT</td>
+                <td className="py-2 px-4">missing</td>
+                <td className="py-2 px-4 font-sans text-sm">Invalid name or party ID format</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">NAME_NOT_FOUND</td>
+                <td className="py-2 px-4">missing</td>
+                <td className="py-2 px-4 font-sans text-sm">Name does not exist</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">PARTY_NOT_FOUND</td>
+                <td className="py-2 px-4">missing</td>
+                <td className="py-2 px-4 font-sans text-sm">Party ID not registered</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">NAME_EXPIRED</td>
+                <td className="py-2 px-4">expired</td>
+                <td className="py-2 px-4 font-sans text-sm">Name registration has expired</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">NAME_UNVERIFIED</td>
+                <td className="py-2 px-4">unverified</td>
+                <td className="py-2 px-4 font-sans text-sm">Name is not identity-verified</td>
+              </tr>
+              <tr className="border-b border-gray-100 dark:border-gray-800">
+                <td className="py-2 px-4">PARTY_CHANGED_SINCE_LAST_RESOLUTION</td>
+                <td className="py-2 px-4">changed</td>
+                <td className="py-2 px-4 font-sans text-sm">Party ID differs from last known</td>
+              </tr>
+              <tr>
+                <td className="py-2 px-4">RESOLVER_UNAVAILABLE</td>
+                <td className="py-2 px-4">missing</td>
+                <td className="py-2 px-4 font-sans text-sm">Network or service error</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Confirmation & Blocking Rules */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">Confirmation & Blocking Rules</h2>
+        <div className="prose prose-gray dark:prose-invert max-w-none space-y-4">
+          <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4">
+            <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-200 mt-0 mb-2">Requires confirmation</h3>
+            <ul className="text-sm text-amber-700 dark:text-amber-300 mb-0">
+              <li><code>unverified</code>: User must acknowledge sending to an unverified identity</li>
+              <li><code>changed</code>: User must confirm the party ID change since last use</li>
+            </ul>
+          </div>
+          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
+            <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mt-0 mb-2">Blocking (cannot proceed)</h3>
+            <ul className="text-sm text-red-700 dark:text-red-300 mb-0">
+              <li><code>missing</code>: Invalid input, name not found, party not found, or resolver error</li>
+              <li><code>expired</code>: Name has expired and cannot be used</li>
+            </ul>
+          </div>
+          <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4">
+            <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mt-0 mb-2">Immediately usable</h3>
+            <ul className="text-sm text-green-700 dark:text-green-300 mb-0">
+              <li><code>ok</code>: Verified names resolve without friction</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo vs Live */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">Demo vs Live Mode</h2>
+        <div className="prose prose-gray dark:prose-invert max-w-none">
+          <p className="text-gray-600 dark:text-gray-300">
+            Both demo and live resolvers share the same <code>ResolveResult</code> contract. The only differences:
+          </p>
+          <ul className="text-gray-600 dark:text-gray-300">
+            <li><strong>Demo mode</strong>: Returns seeded entries for all statuses (alice, bob, bank, expired-name, changed-party)</li>
+            <li><strong>Live mode</strong>: Calls the Scan API; returns <code>RESOLVER_UNAVAILABLE</code> (blocking) when the network is unreachable</li>
+          </ul>
+          <p className="text-gray-600 dark:text-gray-300">
+            This means you can develop and test against demo mode, then switch to live mode for production with zero code changes.
+          </p>
+        </div>
+      </section>
+
+      {/* Links */}
+      <section className="grid gap-4 sm:grid-cols-2 mb-12">
         <Link
           href="/app/demo/recipient"
-          className="inline-flex items-center text-indigo-600 hover:underline"
+          className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors"
         >
-          See the component in action
-          <ArrowRight className="ml-1 h-4 w-4" />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Integration Demo</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">See the component resolving all status types with a mock transfer form.</p>
+          <span className="inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400">
+            Try it
+            <ArrowRight className="ml-1 h-3 w-3" />
+          </span>
+        </Link>
+        <Link
+          href="/pitch"
+          className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors"
+        >
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Pitch Deck</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">12-slide presentation covering problem, solution, and roadmap.</p>
+          <span className="inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400">
+            View deck
+            <ArrowRight className="ml-1 h-3 w-3" />
+          </span>
         </Link>
       </section>
 
       {showGitHub && (
-        <section className="rounded-xl border border-gray-200 bg-gray-50 p-6 sm:p-8">
-          <h2 className="text-xl font-bold tracking-tight text-gray-900 mb-4">Need Help?</h2>
-          <p className="text-gray-600 mb-6">
+        <section className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-6 sm:p-8">
+          <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">Need Help?</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             Check out the source code, open an issue, or contribute to the project.
           </p>
           <a
@@ -183,37 +305,6 @@ function PaymentForm() {
           </a>
         </section>
       )}
-    </div>
-  );
-}
-
-function DocCard({
-  icon,
-  title,
-  description,
-  href,
-  linkText,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  href: string;
-  linkText: string;
-}) {
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-colors hover:border-indigo-300">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-        {icon}
-      </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-sm text-gray-600 mb-4">{description}</p>
-      <Link
-        href={href}
-        className="inline-flex items-center text-sm text-indigo-600 hover:underline"
-      >
-        {linkText}
-        <ArrowRight className="ml-1 h-3 w-3" />
-      </Link>
     </div>
   );
 }
