@@ -40,12 +40,11 @@ function TransferForm() {
 }`;
 
 const DEMO_NAMES = [
-  { name: 'alice', description: 'Unverified name (requires confirmation)', status: 'unverified' },
-  { name: 'bob', description: 'Another unverified name', status: 'unverified' },
-  { name: 'bank', description: 'Verified identity (no confirmation needed)', status: 'ok' },
-  { name: 'expired-name', description: 'Expired name (blocked)', status: 'expired' },
-  { name: 'changed-party', description: 'Party ID changed (requires confirmation)', status: 'changed' },
-  { name: 'nonexistent', description: 'Name not found (blocked)', status: 'missing' },
+  { name: 'bank', label: 'bank.unverified.cns', description: 'Verified identity → ok', status: 'ok' },
+  { name: 'alice', label: 'alice.unverified.cns', description: 'Unverified → confirm', status: 'unverified' },
+  { name: 'changed-party', label: 'changed-party.unverified.cns', description: 'Party changed → confirm', status: 'changed' },
+  { name: 'expired-name', label: 'expired-name.unverified.cns', description: 'Expired → blocked', status: 'expired' },
+  { name: 'nonexistent', label: 'nonexistent.unverified.cns', description: 'Not found → blocked', status: 'missing' },
 ];
 
 export function RecipientShowcase() {
@@ -97,13 +96,24 @@ export function RecipientShowcase() {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Demo Mode — Try All States</AlertTitle>
           <AlertDescription>
-            <p className="mb-2">Search for these names to see different resolution states:</p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {DEMO_NAMES.map(({ name, description, status }) => (
-                <div key={name} className="flex items-center gap-2">
-                  <code className="bg-white/80 px-1.5 py-0.5 rounded text-xs">{name}</code>
-                  <span className="text-muted-foreground text-xs">— {description}</span>
-                </div>
+            <p className="mb-3">Click a name to see its resolution state:</p>
+            <div className="flex flex-wrap gap-2">
+              {DEMO_NAMES.map(({ name, label, description, status }) => (
+                <button
+                  key={name}
+                  onClick={() => {
+                    const input = document.querySelector<HTMLInputElement>('[placeholder="Enter a CNS name or party ID"]');
+                    if (input) {
+                      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+                      nativeInputValueSetter?.call(input, name);
+                      input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded border bg-background hover:bg-muted transition-colors text-xs"
+                >
+                  <code className="font-mono">{label}</code>
+                  <span className="text-muted-foreground">— {description}</span>
+                </button>
               ))}
             </div>
           </AlertDescription>

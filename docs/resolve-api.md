@@ -96,6 +96,11 @@ type ResolveResult =
 | `PARTY_CHANGED_SINCE_LAST_RESOLUTION` | `changed` | Party ID differs from last known |
 | `RESOLVER_UNAVAILABLE` | `missing` | Network or service error |
 
+**Design notes:**
+- `INVALID_INPUT` and `RESOLVER_UNAVAILABLE` intentionally map to status `missing` because the outcome is the same: no usable party ID can be returned. The reason code distinguishes the cause for logging and user messaging.
+- The `blocking` field determines whether submission should be disabled, not `status` alone. Both `missing` and `expired` have `blocking: true`, while `unverified` and `changed` have `blocking: false` (they allow submission after confirmation).
+- An `ambiguous` status was intentionally omitted. Names resolve to exactly one party ID; if a lookup returns multiple candidates, the resolver treats it as an error (`RESOLVER_UNAVAILABLE`).
+
 ## Confirmation Rules
 
 **Requires confirmation (`requiresConfirmation: true`):**

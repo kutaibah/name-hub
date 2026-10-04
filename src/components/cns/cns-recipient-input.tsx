@@ -78,35 +78,35 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
       switch (result.status) {
         case 'ok':
           return (
-            <Badge className="bg-green-100 text-green-800 border-green-200 gap-1">
+            <Badge className="bg-green-600 text-white border-green-700 gap-1">
               <ShieldCheck className="h-3 w-3" />
               {result.verified ? 'Verified' : 'Resolved'}
             </Badge>
           );
         case 'unverified':
           return (
-            <Badge className="bg-amber-100 text-amber-800 border-amber-200 gap-1">
+            <Badge className="bg-amber-500 text-white border-amber-600 gap-1">
               <AlertTriangle className="h-3 w-3" />
               Unverified
             </Badge>
           );
         case 'changed':
           return (
-            <Badge className="bg-orange-100 text-orange-800 border-orange-200 gap-1">
+            <Badge className="bg-orange-500 text-white border-orange-600 gap-1">
               <RefreshCw className="h-3 w-3" />
               Changed
             </Badge>
           );
         case 'expired':
           return (
-            <Badge variant="destructive" className="gap-1">
+            <Badge className="bg-red-600 text-white border-red-700 gap-1">
               <Clock className="h-3 w-3" />
               Expired
             </Badge>
           );
         case 'missing':
           return (
-            <Badge variant="destructive" className="gap-1">
+            <Badge className="bg-red-600 text-white border-red-700 gap-1">
               <X className="h-3 w-3" />
               {result.reasonCode === 'INVALID_INPUT' ? 'Invalid' : 'Not Found'}
             </Badge>
@@ -122,13 +122,13 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
     const getCardStyle = () => {
       if (!result) return '';
       if (result.status === 'ok' || (needsConfirmation && isConfirmed)) {
-        return 'border-green-300 bg-green-50/50';
+        return 'border-green-400 bg-green-50 dark:bg-green-950 dark:border-green-700';
       }
       if (needsConfirmation && !isConfirmed) {
-        return 'border-amber-300 bg-amber-50/50';
+        return 'border-amber-400 bg-amber-50 dark:bg-amber-950 dark:border-amber-700';
       }
       if (isBlocked) {
-        return 'border-red-300 bg-red-50/50';
+        return 'border-red-400 bg-red-50 dark:bg-red-950 dark:border-red-700';
       }
       return '';
     };
@@ -199,13 +199,13 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     {result.name && (
-                      <code className="font-mono text-sm bg-white/80 px-2 py-0.5 rounded border">
+                      <code className="font-mono text-sm bg-background px-2 py-0.5 rounded border border-border text-foreground">
                         {result.name}
                       </code>
                     )}
                     {getStatusBadge()}
                     {showNetworkBadge && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs bg-background">
                         {result.source === 'demo' ? 'Demo' : 'Live'}
                       </Badge>
                     )}
@@ -214,7 +214,7 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
               </div>
 
               {/* Message */}
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm font-medium text-foreground">
                 {getMessage()}
               </p>
 
@@ -223,7 +223,7 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
                 <div className="space-y-1">
                   <Tooltip>
                     <TooltipTrigger>
-                      <span className="text-xs text-muted-foreground font-mono cursor-help block">
+                      <span className="text-xs text-foreground/80 font-mono cursor-help block">
                         Party: {formatPartyId(result.partyId, true)}
                       </span>
                     </TooltipTrigger>
@@ -233,7 +233,7 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
                   </Tooltip>
 
                   {result.expiresAt && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-foreground/70">
                       Expires: {new Date(result.expiresAt).toLocaleDateString()}
                     </p>
                   )}
