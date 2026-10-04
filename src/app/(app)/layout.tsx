@@ -7,7 +7,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col bg-white">
       <Providers>
         <AppHeader />
-        <main className="flex-1 bg-gray-50/50">
+        <main className="flex-1 bg-white">
           {children}
         </main>
         <footer className="border-t border-gray-100 bg-gray-50 py-6 mt-auto">
