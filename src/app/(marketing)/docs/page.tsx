@@ -38,13 +38,19 @@ export default function DocsPage() {
 
       {/* Step 1: Install */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">1. Install</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">1. Copy the component files</h2>
         <div className="rounded-xl bg-slate-900 p-4 overflow-x-auto">
           <pre className="text-sm text-slate-100">
-            <code>{`npm install @canton-names/resolver
-# or copy CnsRecipientInput from the demo`}</code>
+            <code>{`# Copy these files into your project:
+src/components/cns/cns-recipient-input.tsx
+src/lib/cns/resolve-contract.ts
+src/lib/cns/demo-resolver.ts  # for demo mode
+src/lib/cns/demo-fixtures.ts  # demo data`}</code>
           </pre>
         </div>
+        <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 italic">
+          npm package coming for the pilot.
+        </p>
       </section>
 
       {/* Step 2: Integrate */}

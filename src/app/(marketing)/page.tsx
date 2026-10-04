@@ -76,7 +76,7 @@ export default function LandingPage() {
                 </div>
                 
                 <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
-                  Typed status codes • Blocks risky sends • Ready for production
+                  Typed status codes • Blocks risky sends • Demo mode
                 </p>
               </div>
             </div>
