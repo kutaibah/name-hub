@@ -1,46 +1,59 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, Check, Code, AlertCircle } from 'lucide-react';
+import { Copy, Check, Code, AlertCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
 import { CnsRecipientInput } from './cns-recipient-input';
-import type { ResolvedName } from '@/lib/cns/types';
+import type { ResolveResult } from '@/lib/cns/resolve-contract';
 import { isDemoMode } from '@/lib/cns/config';
 
 const EXAMPLE_CODE = `import { CnsRecipientInput } from '@/components/cns/cns-recipient-input';
+import type { ResolveResult } from '@/lib/cns/resolve-contract';
 
 function TransferForm() {
-  const [recipient, setRecipient] = useState<ResolvedName | null>(null);
+  const [usablePartyId, setUsablePartyId] = useState<string | null>(null);
+  const [lastResult, setLastResult] = useState<ResolveResult | null>(null);
 
   return (
     <form onSubmit={handleTransfer}>
       <CnsRecipientInput
         label="Recipient"
-        description="Enter a CNS name to resolve the recipient"
-        onSelect={(resolved) => setRecipient(resolved)}
+        description="Enter a CNS name or party ID"
+        onResolve={(result) => setLastResult(result)}
+        onChange={({ partyId }) => setUsablePartyId(partyId)}
       />
       
-      {recipient && (
-        <div>
-          <p>Sending to: {recipient.canonicalName}</p>
-          <p>Party ID: {recipient.partyId}</p>
-        </div>
+      {usablePartyId && (
+        <p>Ready to send to: {usablePartyId.slice(0, 20)}...</p>
       )}
       
-      <button type="submit" disabled={!recipient}>
-        Continue
+      <button type="submit" disabled={!usablePartyId}>
+        Send Transfer
       </button>
     </form>
   );
 }`;
 
+const DEMO_NAMES = [
+  { name: 'alice', description: 'Unverified name (requires confirmation)', status: 'unverified' },
+  { name: 'bob', description: 'Another unverified name', status: 'unverified' },
+  { name: 'bank', description: 'Verified identity (no confirmation needed)', status: 'ok' },
+  { name: 'expired-name', description: 'Expired name (blocked)', status: 'expired' },
+  { name: 'changed-party', description: 'Party ID changed (requires confirmation)', status: 'changed' },
+  { name: 'nonexistent', description: 'Name not found (blocked)', status: 'missing' },
+];
+
 export function RecipientShowcase() {
-  const [selectedRecipient, setSelectedRecipient] = useState<ResolvedName | null>(null);
+  const [usablePartyId, setUsablePartyId] = useState<string | null>(null);
+  const [lastResult, setLastResult] = useState<ResolveResult | null>(null);
+  const [isConfirmed, setIsConfirmed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [transferAmount, setTransferAmount] = useState('10.0');
   const isDemo = isDemoMode();
 
   const handleCopyCode = async () => {
@@ -53,92 +66,161 @@ export function RecipientShowcase() {
     }
   };
 
-  const handleSelect = (resolved: ResolvedName) => {
-    setSelectedRecipient(resolved);
+  const handleResolve = (result: ResolveResult) => {
+    setLastResult(result);
   };
+
+  const handleChange = (data: { partyId: string | null; result: ResolveResult | null; confirmed: boolean }) => {
+    setUsablePartyId(data.partyId);
+    setIsConfirmed(data.confirmed);
+  };
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!usablePartyId) return;
+    alert(`Demo: Would send ${transferAmount} CC to ${usablePartyId.slice(0, 30)}...`);
+  };
+
+  const canSend = usablePartyId !== null;
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold mb-2">Integration Demo</h1>
         <p className="text-lg text-muted-foreground">
-          Reusable CNS name resolution for your Canton applications
+          Safe recipient resolution for Canton applications — &ldquo;Lookup is the product&rdquo;
         </p>
       </div>
 
       {isDemo && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Demo Mode</AlertTitle>
+          <AlertTitle>Demo Mode — Try All States</AlertTitle>
           <AlertDescription>
-            This demo uses simulated data. Try searching for names like &ldquo;alice&rdquo;, &ldquo;bob&rdquo;, or &ldquo;canton-dev&rdquo;.
+            <p className="mb-2">Search for these names to see different resolution states:</p>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {DEMO_NAMES.map(({ name, description, status }) => (
+                <div key={name} className="flex items-center gap-2">
+                  <code className="bg-white/80 px-1.5 py-0.5 rounded text-xs">{name}</code>
+                  <span className="text-muted-foreground text-xs">— {description}</span>
+                </div>
+              ))}
+            </div>
           </AlertDescription>
         </Alert>
       )}
 
       <Card>
         <CardHeader>
-          <CardTitle>CnsRecipientInput Component</CardTitle>
+          <CardTitle>Mock Transfer Form</CardTitle>
           <CardDescription>
-            A drop-in component that handles CNS name resolution with debouncing,
-            error handling, and explicit selection UX.
+            Demonstrates how Send is disabled until the recipient is safely resolved or confirmed.
+            The component handles all safety checks — blocking expired/missing names and requiring
+            explicit confirmation for unverified or changed party IDs.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <h3 className="font-medium mb-3">Try it out</h3>
+        <CardContent>
+          <form onSubmit={handleSend} className="space-y-4">
             <CnsRecipientInput
-              label="Select Recipient"
-              description="Enter a CNS name to resolve to a Canton party ID"
-              onSelect={handleSelect}
+              label="Recipient"
+              description="Enter a CNS name or party ID"
+              onResolve={handleResolve}
+              onChange={handleChange}
               showNetworkBadge={true}
             />
-          </div>
 
-          {selectedRecipient && (
-            <>
-              <Separator />
-              <div>
-                <h3 className="font-medium mb-3 flex items-center gap-2">
-                  <Check className="h-5 w-5 text-success" />
-                  Recipient Selected
-                </h3>
-                <div className="bg-secondary rounded-lg p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-sm text-muted-foreground">Canonical Name:</span>
-                    <code className="font-mono text-sm">{selectedRecipient.canonicalName}</code>
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-sm text-muted-foreground">Party ID:</span>
-                    <code className="font-mono text-xs break-all max-w-[300px] text-right">
-                      {selectedRecipient.partyId}
-                    </code>
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-sm text-muted-foreground">Network:</span>
-                    <span className="text-sm">{selectedRecipient.network}</span>
-                  </div>
-                  {selectedRecipient.expiresAt && (
-                    <div className="flex justify-between items-start">
-                      <span className="text-sm text-muted-foreground">Expires:</span>
-                      <span className="text-sm">
-                        {new Date(selectedRecipient.expiresAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <Alert className="mt-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Integration Point</AlertTitle>
-                  <AlertDescription>
-                    In a real application, you would use this resolved party ID to construct 
-                    a Canton transaction. This demo does not send any actual transactions.
-                  </AlertDescription>
-                </Alert>
+            <div className="flex gap-4 items-end">
+              <div className="flex-1">
+                <label className="block text-sm font-medium mb-1.5">Amount</label>
+                <Input
+                  type="number"
+                  value={transferAmount}
+                  onChange={(e) => setTransferAmount(e.target.value)}
+                  placeholder="10.0"
+                  className="max-w-32"
+                />
               </div>
-            </>
-          )}
+              <span className="text-sm text-muted-foreground pb-2">CC (Canton Coin)</span>
+            </div>
+
+            <Separator />
+
+            <div className="flex items-center justify-between">
+              <div className="text-sm">
+                {!lastResult && (
+                  <span className="text-muted-foreground">Enter a recipient to continue</span>
+                )}
+                {lastResult && !canSend && (
+                  <span className="text-amber-600 font-medium">
+                    {lastResult.blocking 
+                      ? '⛔ Cannot send — resolution blocked' 
+                      : '⚠️ Confirmation required before sending'}
+                  </span>
+                )}
+                {canSend && (
+                  <span className="text-green-600 font-medium">
+                    ✓ Ready to send to {lastResult?.name || 'party ID'}
+                  </span>
+                )}
+              </div>
+              <Button type="submit" disabled={!canSend} className="gap-2">
+                <Send className="h-4 w-4" />
+                Send Transfer
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {lastResult && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Resolution Result (Debug View)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre className="bg-secondary rounded-lg p-4 overflow-x-auto text-xs">
+              <code>{JSON.stringify(lastResult, null, 2)}</code>
+            </pre>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Resolution Status Reference</CardTitle>
+          <CardDescription>How each status affects the Send button</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+              <Badge className="bg-green-100 text-green-800 border-green-200">ok</Badge>
+              <div>
+                <p className="font-medium text-green-800">Immediately usable</p>
+                <p className="text-sm text-green-700">Verified names resolve to OK. Send enabled.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+              <Badge className="bg-amber-100 text-amber-800 border-amber-200">unverified</Badge>
+              <div>
+                <p className="font-medium text-amber-800">Requires confirmation</p>
+                <p className="text-sm text-amber-700">User must check the confirmation box. Send enabled after.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-orange-50 border border-orange-200">
+              <Badge className="bg-orange-100 text-orange-800 border-orange-200">changed</Badge>
+              <div>
+                <p className="font-medium text-orange-800">Requires confirmation</p>
+                <p className="text-sm text-orange-700">Party ID differs from last known. User must confirm the change.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-red-50 border border-red-200">
+              <Badge variant="destructive">expired / missing</Badge>
+              <div>
+                <p className="font-medium text-red-800">Blocked</p>
+                <p className="text-sm text-red-700">Cannot proceed. Send disabled. User must enter a valid recipient.</p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -151,7 +233,7 @@ export function RecipientShowcase() {
                 Integration Example
               </CardTitle>
               <CardDescription>
-                Copy this code to integrate CNS name resolution in your app
+                Copy this code to integrate safe CNS resolution in your app
               </CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={handleCopyCode}>
@@ -178,43 +260,27 @@ export function RecipientShowcase() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Component Features</CardTitle>
+          <CardTitle>Safety Features</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-3">
             {[
-              'Debounced lookup with configurable delay',
-              'Automatic validation of name format',
-              'Loading, error, and success states',
-              'Stale request protection (cancels outdated queries)',
-              'Keyboard navigation (Enter to select, Escape to clear)',
-              'Accessible with proper ARIA attributes',
-              'Explicit selection requirement before use',
-              'Expired name detection and warning',
-              'Network badge showing live vs demo mode',
-              'Callback with full resolved data (name, party, network, metadata)',
+              'Blocked states (missing, expired, error) prevent accidental sends',
+              'Unverified names require explicit user confirmation',
+              'Changed party IDs require confirmation with old/new comparison',
+              'Debounced resolution prevents request spam',
+              'Abort controller cancels stale requests',
+              'Local cache detects party ID changes between sessions',
+              'Keyboard navigation (Escape to clear)',
+              'Accessible with aria-live status announcements',
+              'Full ResolveResult exposed via callbacks for custom handling',
             ].map((feature, i) => (
               <li key={i} className="flex items-start gap-2 text-sm">
-                <Check className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                <Check className="h-4 w-4 text-green-600 shrink-0 mt-0.5" />
                 <span>{feature}</span>
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-secondary/30">
-        <CardContent className="py-6">
-          <h3 className="font-medium mb-2">Future: Extractable Package</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            This component is designed to be extracted into a standalone npm package
-            for easy integration across Canton Network applications. For now, copy
-            the component source directly into your project.
-          </p>
-          <div className="flex gap-2">
-            <Badge variant="outline">Not yet published</Badge>
-            <Badge variant="outline">Copy source for now</Badge>
-          </div>
         </CardContent>
       </Card>
     </div>

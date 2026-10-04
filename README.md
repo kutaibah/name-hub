@@ -64,6 +64,29 @@ Demo names available:
 
 Use the Demo Controls panel (bottom-right) to test different registration scenarios.
 
+### Resolve API
+
+Canton Names provides a typed resolve contract for safe recipient resolution:
+
+```typescript
+import { getResolver, type ResolveResult } from '@/lib/cns';
+
+const resolver = getResolver();
+const result = await resolver.resolve('alice');
+
+// result.status: 'ok' | 'missing' | 'expired' | 'unverified' | 'changed'
+// result.partyId: string | null (null when blocked)
+// result.requiresConfirmation: boolean (true for unverified/changed)
+// result.blocking: boolean (true for missing/expired)
+```
+
+**Status behavior:**
+- `ok`: Party ID usable immediately
+- `unverified/changed`: Requires user confirmation before use
+- `missing/expired`: Blocked, cannot proceed
+
+See [docs/resolve-api.md](./docs/resolve-api.md) for full documentation.
+
 ### Live Mode
 
 To connect to a real Canton Network:

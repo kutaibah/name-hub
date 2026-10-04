@@ -1,19 +1,21 @@
 'use client';
 
 import { forwardRef, useId } from 'react';
-import { Search, Check, X, AlertCircle, Loader2, Clock } from 'lucide-react';
+import { Search, Check, X, AlertCircle, Loader2, Clock, AlertTriangle, ShieldAlert, ShieldCheck, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { useCnsRecipientInput } from '@/lib/hooks/use-cns';
-import { formatPartyId } from '@/lib/cns/types';
-import type { ResolvedName } from '@/lib/cns/types';
+import { useCnsResolve } from '@/lib/hooks/use-cns-resolve';
+import type { ResolveResult } from '@/lib/cns/resolve-contract';
+import { getReasonMessage } from '@/lib/cns/resolve-contract';
 import { cn } from '@/lib/utils';
 
 export interface CnsRecipientInputProps {
-  onSelect?: (resolved: ResolvedName) => void;
+  onResolve?: (result: ResolveResult) => void;
+  onChange?: (data: { partyId: string | null; result: ResolveResult | null; confirmed: boolean }) => void;
   placeholder?: string;
   label?: string;
   description?: string;
@@ -23,11 +25,19 @@ export interface CnsRecipientInputProps {
   debounceMs?: number;
 }
 
+function formatPartyId(partyId: string, short: boolean = false): string {
+  if (short && partyId.length > 20) {
+    return `${partyId.slice(0, 10)}...${partyId.slice(-8)}`;
+  }
+  return partyId;
+}
+
 export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputProps>(
   function CnsRecipientInput(
     {
-      onSelect,
-      placeholder = 'Enter a CNS name (e.g., alice)',
+      onResolve,
+      onChange,
+      placeholder = 'Enter a CNS name or party ID',
       label,
       description,
       disabled = false,
@@ -41,26 +51,86 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
     const {
       input,
       setInput,
-      resolved,
+      result,
       isResolving,
       error,
-      isSelected,
-      select,
+      isConfirmed,
+      confirm,
       clear,
-      canSelect,
-    } = useCnsRecipientInput({
+      canUse,
+      needsConfirmation,
+      isBlocked,
+    } = useCnsResolve({
       debounceMs,
-      onSelect,
+      onResolve,
+      onChange,
     });
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && canSelect) {
-        e.preventDefault();
-        select();
-      }
       if (e.key === 'Escape') {
         clear();
       }
+    };
+
+    const getStatusBadge = () => {
+      if (!result) return null;
+
+      switch (result.status) {
+        case 'ok':
+          return (
+            <Badge className="bg-green-100 text-green-800 border-green-200 gap-1">
+              <ShieldCheck className="h-3 w-3" />
+              {result.verified ? 'Verified' : 'Resolved'}
+            </Badge>
+          );
+        case 'unverified':
+          return (
+            <Badge className="bg-amber-100 text-amber-800 border-amber-200 gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              Unverified
+            </Badge>
+          );
+        case 'changed':
+          return (
+            <Badge className="bg-orange-100 text-orange-800 border-orange-200 gap-1">
+              <RefreshCw className="h-3 w-3" />
+              Changed
+            </Badge>
+          );
+        case 'expired':
+          return (
+            <Badge variant="destructive" className="gap-1">
+              <Clock className="h-3 w-3" />
+              Expired
+            </Badge>
+          );
+        case 'missing':
+          return (
+            <Badge variant="destructive" className="gap-1">
+              <X className="h-3 w-3" />
+              {result.reasonCode === 'INVALID_INPUT' ? 'Invalid' : 'Not Found'}
+            </Badge>
+          );
+      }
+    };
+
+    const getMessage = () => {
+      if (!result) return null;
+      return getReasonMessage(result.reasonCode);
+    };
+
+    const getCardStyle = () => {
+      if (!result) return '';
+      if (result.status === 'ok' || (needsConfirmation && isConfirmed)) {
+        return 'border-green-300 bg-green-50/50';
+      }
+      if (needsConfirmation && !isConfirmed) {
+        return 'border-amber-300 bg-amber-50/50';
+      }
+      if (isBlocked) {
+        return 'border-red-300 bg-red-50/50';
+      }
+      return '';
     };
 
     return (
@@ -86,22 +156,22 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={disabled || isSelected}
+            disabled={disabled}
             className="pl-9 pr-10"
-            aria-describedby={resolved ? `${id}-result` : undefined}
-            aria-invalid={!!error}
+            aria-describedby={result ? `${id}-result` : undefined}
+            aria-invalid={isBlocked || !!error}
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
             {isResolving && (
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             )}
-            {isSelected && (
+            {!isResolving && input && (
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6"
                 onClick={clear}
-                title="Clear selection"
+                title="Clear"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -116,87 +186,119 @@ export const CnsRecipientInput = forwardRef<HTMLInputElement, CnsRecipientInputP
           </div>
         )}
 
-        {resolved && !isSelected && (
-          <Card className="mt-2 p-3" id={`${id}-result`}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <code className="font-mono text-sm bg-secondary px-2 py-0.5 rounded">
-                    {resolved.canonicalName}
-                  </code>
-                  {resolved.isExpired ? (
-                    <Badge variant="destructive" className="gap-1">
-                      <Clock className="h-3 w-3" />
-                      Expired
-                    </Badge>
-                  ) : (
-                    <Badge className="bg-success/20 text-success border-success/30 gap-1">
-                      <Check className="h-3 w-3" />
-                      Found
-                    </Badge>
-                  )}
-                  {showNetworkBadge && resolved.isDemo && (
-                    <Badge variant="outline" className="text-xs">Demo</Badge>
-                  )}
+        {result && (
+          <Card 
+            className={cn('mt-2 p-3', getCardStyle())} 
+            id={`${id}-result`}
+            role="status"
+            aria-live="polite"
+          >
+            <div className="space-y-3">
+              {/* Status header */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {result.name && (
+                      <code className="font-mono text-sm bg-white/80 px-2 py-0.5 rounded border">
+                        {result.name}
+                      </code>
+                    )}
+                    {getStatusBadge()}
+                    {showNetworkBadge && (
+                      <Badge variant="outline" className="text-xs">
+                        {result.source === 'demo' ? 'Demo' : 'Live'}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
+              </div>
 
-                <div className="mt-2 space-y-1">
+              {/* Message */}
+              <p className="text-sm text-muted-foreground">
+                {getMessage()}
+              </p>
+
+              {/* Party ID display */}
+              {result.partyId && (
+                <div className="space-y-1">
                   <Tooltip>
                     <TooltipTrigger>
-                      <span className="text-xs text-muted-foreground font-mono cursor-help">
-                        Party: {formatPartyId(resolved.partyId, true)}
+                      <span className="text-xs text-muted-foreground font-mono cursor-help block">
+                        Party: {formatPartyId(result.partyId, true)}
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-xs">
-                      <p className="font-mono text-xs break-all">{resolved.partyId}</p>
+                      <p className="font-mono text-xs break-all">{result.partyId}</p>
                     </TooltipContent>
                   </Tooltip>
 
-                  {resolved.expiresAt && !resolved.isExpired && (
+                  {result.expiresAt && (
                     <p className="text-xs text-muted-foreground">
-                      Expires: {new Date(resolved.expiresAt).toLocaleDateString()}
-                    </p>
-                  )}
-
-                  {resolved.description && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {resolved.description}
+                      Expires: {new Date(result.expiresAt).toLocaleDateString()}
                     </p>
                   )}
                 </div>
-              </div>
-
-              {canSelect && (
-                <Button
-                  size="sm"
-                  onClick={select}
-                  className="shrink-0"
-                >
-                  Select
-                </Button>
               )}
 
-              {resolved.isExpired && (
-                <Badge variant="outline" className="shrink-0 text-destructive border-destructive">
-                  Cannot select expired name
-                </Badge>
+              {/* Changed: show previous party */}
+              {result.status === 'changed' && result.previousPartyId && (
+                <div className="text-xs text-orange-700 bg-orange-100 rounded px-2 py-1">
+                  <strong>Previous:</strong>{' '}
+                  <code className="font-mono">{formatPartyId(result.previousPartyId, true)}</code>
+                </div>
               )}
-            </div>
-          </Card>
-        )}
 
-        {isSelected && resolved && (
-          <Card className="mt-2 p-3 border-success/50 bg-success/5">
-            <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-success shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">
-                  Selected: <code className="font-mono">{resolved.canonicalName}</code>
-                </p>
-                <p className="text-xs text-muted-foreground font-mono truncate">
-                  {resolved.partyId}
-                </p>
-              </div>
+              {/* Confirmation section for unverified/changed */}
+              {needsConfirmation && !isConfirmed && (
+                <div className="flex items-start gap-2 pt-2 border-t border-amber-200">
+                  <Checkbox
+                    id={`${id}-confirm`}
+                    checked={isConfirmed}
+                    onCheckedChange={(checked: boolean | 'indeterminate') => {
+                      if (checked === true) confirm();
+                    }}
+                    className="mt-0.5"
+                  />
+                  <label 
+                    htmlFor={`${id}-confirm`} 
+                    className="text-sm text-amber-800 cursor-pointer select-none"
+                  >
+                    {result.status === 'unverified' 
+                      ? 'I understand this name is not identity-verified and accept the risk'
+                      : 'I confirm the party ID has changed and want to proceed with the new owner'}
+                  </label>
+                </div>
+              )}
+
+              {/* Confirmed state */}
+              {needsConfirmation && isConfirmed && (
+                <div className="flex items-center gap-2 pt-2 border-t border-green-200">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span className="text-sm text-green-700 font-medium">
+                    Confirmed — ready to use
+                  </span>
+                </div>
+              )}
+
+              {/* OK state indicator */}
+              {result.status === 'ok' && (
+                <div className="flex items-center gap-2 pt-2 border-t">
+                  <ShieldCheck className="h-4 w-4 text-green-600" />
+                  <span className="text-sm text-green-700 font-medium">
+                    {result.verified ? 'Verified identity — safe to use' : 'Resolved — ready to use'}
+                  </span>
+                </div>
+              )}
+
+              {/* Blocked state */}
+              {isBlocked && (
+                <div className="flex items-center gap-2 pt-2 border-t border-red-200">
+                  <ShieldAlert className="h-4 w-4 text-red-600" />
+                  <span className="text-sm text-red-700 font-medium">
+                    Cannot proceed — {result.status === 'expired' ? 'name has expired' : 'resolution failed'}
+                  </span>
+                </div>
+              )}
             </div>
           </Card>
         )}
@@ -210,9 +312,12 @@ export function CnsRecipientInputExample() {
     <div className="max-w-md">
       <CnsRecipientInput
         label="Recipient"
-        description="Enter a CNS name to resolve the recipient's party ID"
-        onSelect={(resolved) => {
-          console.log('Selected recipient:', resolved);
+        description="Enter a CNS name or party ID to resolve"
+        onResolve={(result) => {
+          console.log('Resolved:', result);
+        }}
+        onChange={({ partyId, confirmed }) => {
+          console.log('Usable party:', partyId, 'Confirmed:', confirmed);
         }}
       />
     </div>
