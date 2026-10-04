@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import { existsSync, mkdirSync } from 'fs';
 
-const BASE_URL = 'http://localhost:43235';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3847';
 const OUTPUT_DIR = '/opt/cursor/artifacts';
 
 if (!existsSync(OUTPUT_DIR)) {
@@ -47,10 +47,10 @@ async function main() {
   console.log('  Saved: pitch-judges.pdf');
   await pdfContext.close();
 
-  // Generate screenshots at 1280 viewport
+  // Generate screenshots at 1280x720 viewport
   console.log('\n=== Generating Screenshots ===');
   const screenshotContext = await browser.newContext({
-    viewport: { width: 1280, height: 900 },
+    viewport: { width: 1280, height: 720 },
     deviceScaleFactor: 1,
   });
   const screenshotPage = await screenshotContext.newPage();
@@ -58,20 +58,28 @@ async function main() {
   // Homepage hero screenshot
   console.log('Capturing homepage-hero.png...');
   await screenshotPage.goto(BASE_URL, { waitUntil: 'networkidle' });
-  await screenshotPage.waitForTimeout(1000);
+  await screenshotPage.waitForTimeout(2000);
+  
+  // Verify CSS loaded by checking computed styles
+  const headerBg = await screenshotPage.evaluate(() => {
+    const header = document.querySelector('header');
+    return header ? getComputedStyle(header).backgroundColor : 'none';
+  });
+  console.log(`  Header background: ${headerBg}`);
+  
   await screenshotPage.screenshot({
     path: `${OUTPUT_DIR}/homepage-hero.png`,
-    clip: { x: 0, y: 0, width: 1280, height: 900 },
+    clip: { x: 0, y: 0, width: 1280, height: 720 },
   });
   console.log('  Saved: homepage-hero.png');
 
   // Docs quickstart screenshot
   console.log('Capturing docs-quickstart.png...');
   await screenshotPage.goto(`${BASE_URL}/docs`, { waitUntil: 'networkidle' });
-  await screenshotPage.waitForTimeout(1000);
+  await screenshotPage.waitForTimeout(2000);
   await screenshotPage.screenshot({
     path: `${OUTPUT_DIR}/docs-quickstart.png`,
-    clip: { x: 0, y: 0, width: 1280, height: 900 },
+    clip: { x: 0, y: 0, width: 1280, height: 720 },
   });
   console.log('  Saved: docs-quickstart.png');
 
