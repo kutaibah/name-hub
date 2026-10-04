@@ -109,7 +109,7 @@ export function RecipientShowcase() {
                       input.dispatchEvent(new Event('input', { bubbles: true }));
                     }
                   }}
-                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded border bg-background hover:bg-muted transition-colors text-xs"
+                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-xs"
                 >
                   <code className="font-mono">{label}</code>
                   <span className="text-muted-foreground">— {description}</span>
@@ -120,10 +120,10 @@ export function RecipientShowcase() {
         </Alert>
       )}
 
-      <Card>
+      <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle>Mock Transfer Form</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-gray-900">Mock Transfer Form</CardTitle>
+          <CardDescription className="text-gray-600">
             Demonstrates how Send is disabled until the recipient is safely resolved or confirmed.
             The component handles all safety checks — blocking expired/missing names and requiring
             explicit confirmation for unverified or changed party IDs.
@@ -158,17 +158,17 @@ export function RecipientShowcase() {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 {!lastResult && (
-                  <span className="text-muted-foreground">Enter a recipient to continue</span>
+                  <span className="text-gray-500">Enter a recipient to continue</span>
                 )}
                 {lastResult && !canSend && (
-                  <span className="text-amber-600 font-medium">
+                  <span className="text-amber-700 font-medium">
                     {lastResult.blocking 
                       ? '⛔ Cannot send — resolution blocked' 
                       : '⚠️ Confirmation required before sending'}
                   </span>
                 )}
                 {canSend && (
-                  <span className="text-green-600 font-medium">
+                  <span className="text-green-700 font-medium">
                     ✓ Ready to send to {lastResult?.name || 'party ID'}
                   </span>
                 )}
@@ -183,22 +183,22 @@ export function RecipientShowcase() {
       </Card>
 
       {lastResult && (
-        <Card>
+        <Card className="border-gray-200 bg-white">
           <CardHeader>
-            <CardTitle className="text-base">Resolution Result (Debug View)</CardTitle>
+            <CardTitle className="text-base text-gray-900">Resolution Result (Debug View)</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="bg-secondary rounded-lg p-4 overflow-x-auto text-xs">
+            <pre className="bg-slate-900 rounded-lg p-4 overflow-x-auto text-xs text-slate-100">
               <code>{JSON.stringify(lastResult, null, 2)}</code>
             </pre>
           </CardContent>
         </Card>
       )}
 
-      <Card>
+      <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle>Resolution Status Reference</CardTitle>
-          <CardDescription>How each status affects the Send button</CardDescription>
+          <CardTitle className="text-gray-900">Resolution Status Reference</CardTitle>
+          <CardDescription className="text-gray-600">How each status affects the Send button</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -234,15 +234,15 @@ export function RecipientShowcase() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-900">
                 <Code className="h-5 w-5" />
                 Integration Example
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600">
                 Copy this code to integrate safe CNS resolution in your app
               </CardDescription>
             </div>
@@ -262,15 +262,15 @@ export function RecipientShowcase() {
           </div>
         </CardHeader>
         <CardContent>
-          <pre className="bg-secondary rounded-lg p-4 overflow-x-auto text-sm">
+          <pre className="bg-slate-900 rounded-lg p-4 overflow-x-auto text-sm text-slate-100">
             <code>{EXAMPLE_CODE}</code>
           </pre>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle>Safety Features</CardTitle>
+          <CardTitle className="text-gray-900">Safety Features</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-3">
@@ -285,7 +285,7 @@ export function RecipientShowcase() {
               'Accessible with aria-live status announcements',
               'Full ResolveResult exposed via callbacks for custom handling',
             ].map((feature, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm">
+              <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
                 <Check className="h-4 w-4 text-green-600 shrink-0 mt-0.5" />
                 <span>{feature}</span>
               </li>

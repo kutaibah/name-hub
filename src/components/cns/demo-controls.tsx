@@ -52,7 +52,7 @@ export function DemoControls() {
   return (
     <div className="fixed bottom-4 right-4 z-50">
       <Card className={cn(
-        'w-80 shadow-lg border-warning/50',
+        'w-80 shadow-lg border-amber-300 bg-white',
         !isOpen && 'w-auto'
       )}>
         <CardHeader 

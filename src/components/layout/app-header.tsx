@@ -23,9 +23,9 @@ export function AppHeader() {
   const isDemo = isDemoMode();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       {isDemo && (
-        <div className="bg-warning/20 border-b border-warning/30 px-4 py-1.5 text-center text-sm text-warning-foreground">
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-1.5 text-center text-sm text-amber-800">
           <span className="font-medium">Demo mode</span> — simulated data and payments
         </div>
       )}
@@ -42,7 +42,7 @@ export function AppHeader() {
                 className="h-9 w-9"
                 priority
               />
-              <span className="hidden sm:block font-semibold text-lg">Canton Names</span>
+              <span className="hidden sm:block font-semibold text-lg text-gray-900">Canton Names</span>
             </Link>
             
             <nav className="hidden md:flex items-center gap-1">
@@ -56,8 +56,8 @@ export function AppHeader() {
                     className={cn(
                       'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                       isActive
-                        ? 'bg-secondary text-secondary-foreground'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                        ? 'bg-indigo-50 text-indigo-700'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     )}
                   >
                     {item.label}
@@ -69,8 +69,8 @@ export function AppHeader() {
                 className={cn(
                   'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                   pathname === '/app/demo/recipient'
-                    ? 'bg-secondary text-secondary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    ? 'bg-indigo-50 text-indigo-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 )}
               >
                 Integration Demo
@@ -79,13 +79,13 @@ export function AppHeader() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Badge variant="outline" className="hidden sm:flex text-xs">
+            <Badge variant="outline" className="hidden sm:flex text-xs border-gray-300 text-gray-600">
               {getNetworkName()}
             </Badge>
 
             {user ? (
               <div className="flex items-center gap-2">
-                <span className="hidden sm:block text-sm text-muted-foreground">
+                <span className="hidden sm:block text-sm text-gray-600">
                   {user.displayName || 'Connected'}
                 </span>
                 <Button
@@ -122,7 +122,7 @@ export function AppHeader() {
         </div>
 
         {mobileMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-border">
+          <nav className="md:hidden py-4 border-t border-gray-100 bg-white">
             <div className="flex flex-col gap-1">
               {navItems.map(item => {
                 if (item.requireAuth && !user) return null;
@@ -135,8 +135,8 @@ export function AppHeader() {
                     className={cn(
                       'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                       isActive
-                        ? 'bg-secondary text-secondary-foreground'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                        ? 'bg-indigo-50 text-indigo-700'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     )}
                   >
                     {item.label}
@@ -149,15 +149,15 @@ export function AppHeader() {
                 className={cn(
                   'px-3 py-2 rounded-md text-sm font-medium transition-colors',
                   pathname === '/app/demo/recipient'
-                    ? 'bg-secondary text-secondary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    ? 'bg-indigo-50 text-indigo-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 )}
               >
                 Integration Demo
               </Link>
             </div>
-            <div className="mt-4 pt-4 border-t border-border">
-              <Badge variant="outline" className="text-xs">
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <Badge variant="outline" className="text-xs border-gray-300 text-gray-600">
                 {getNetworkName()}
               </Badge>
             </div>

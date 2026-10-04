@@ -84,6 +84,90 @@ async function main() {
   console.log('  Saved: docs-quickstart.png');
 
   await screenshotContext.close();
+
+  // App screenshots at 1280x800 viewport
+  console.log('\n=== Generating App Screenshots ===');
+  const appContext = await browser.newContext({
+    viewport: { width: 1280, height: 800 },
+    deviceScaleFactor: 1,
+  });
+  const appPage = await appContext.newPage();
+
+  // App home
+  console.log('Capturing app-home.png...');
+  await appPage.goto(`${BASE_URL}/app`, { waitUntil: 'networkidle' });
+  await appPage.waitForTimeout(2000);
+  
+  // Verify light theme by checking background
+  const appBg = await appPage.evaluate(() => {
+    const main = document.querySelector('main');
+    return main ? getComputedStyle(main).backgroundColor : 'none';
+  });
+  console.log(`  App main background: ${appBg}`);
+  
+  await appPage.screenshot({
+    path: `${OUTPUT_DIR}/app-home.png`,
+    clip: { x: 0, y: 0, width: 1280, height: 800 },
+  });
+  console.log('  Saved: app-home.png');
+
+  // App demo - bank.cns (ok status)
+  console.log('Capturing app-demo-ok.png...');
+  await appPage.goto(`${BASE_URL}/app/demo/recipient`, { waitUntil: 'networkidle' });
+  await appPage.waitForTimeout(1500);
+  
+  // Type 'bank' to get verified name
+  const input = await appPage.locator('input[placeholder="Enter a CNS name or party ID"]');
+  await input.fill('bank');
+  await appPage.waitForTimeout(1500);
+  
+  // Get the Mock Transfer Form card element
+  const transferCard = await appPage.locator('text=Mock Transfer Form').locator('xpath=ancestor::div[contains(@class, "rounded")]').first();
+  const cardBox = await transferCard.boundingBox();
+  
+  if (cardBox) {
+    await appPage.screenshot({
+      path: `${OUTPUT_DIR}/app-demo-ok.png`,
+      clip: { x: Math.max(0, cardBox.x - 20), y: Math.max(0, cardBox.y - 20), width: Math.min(cardBox.width + 40, 1240), height: Math.min(cardBox.height + 40, 760) },
+    });
+  } else {
+    // Fallback to full page
+    await appPage.screenshot({
+      path: `${OUTPUT_DIR}/app-demo-ok.png`,
+      clip: { x: 0, y: 0, width: 1280, height: 800 },
+    });
+  }
+  console.log('  Saved: app-demo-ok.png');
+
+  // App demo - alice.unverified.cns (unverified status - requires confirm)
+  console.log('Capturing app-demo-confirm.png...');
+  await input.fill('alice');
+  await appPage.waitForTimeout(1500);
+  
+  if (cardBox) {
+    await appPage.screenshot({
+      path: `${OUTPUT_DIR}/app-demo-confirm.png`,
+      clip: { x: Math.max(0, cardBox.x - 20), y: Math.max(0, cardBox.y - 20), width: Math.min(cardBox.width + 40, 1240), height: Math.min(cardBox.height + 40, 760) },
+    });
+  } else {
+    await appPage.screenshot({
+      path: `${OUTPUT_DIR}/app-demo-confirm.png`,
+      clip: { x: 0, y: 0, width: 1280, height: 800 },
+    });
+  }
+  console.log('  Saved: app-demo-confirm.png');
+
+  // App register
+  console.log('Capturing app-register.png...');
+  await appPage.goto(`${BASE_URL}/app/register`, { waitUntil: 'networkidle' });
+  await appPage.waitForTimeout(2000);
+  await appPage.screenshot({
+    path: `${OUTPUT_DIR}/app-register.png`,
+    clip: { x: 0, y: 0, width: 1280, height: 800 },
+  });
+  console.log('  Saved: app-register.png');
+
+  await appContext.close();
   await browser.close();
 
   console.log('\n=== All assets generated ===');

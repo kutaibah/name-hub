@@ -14,18 +14,18 @@ export default function AppHomePage() {
     <div className="min-h-[calc(100vh-16rem)]">
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
-          <Badge variant="outline" className="mb-4">
+          <Badge variant="outline" className="mb-4 border-gray-300 text-gray-600">
             {getNetworkName()}
           </Badge>
           
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-gray-900">
             Human-Readable Names for{' '}
-            <span className="text-primary">Canton Network</span>
+            <span className="text-indigo-600">Canton Network</span>
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
             Replace long party identifiers with memorable names like{' '}
-            <code className="text-primary font-mono">alice{CNS_SUFFIX}</code>.
+            <code className="text-indigo-600 font-mono bg-indigo-50 px-1 rounded">alice{CNS_SUFFIX}</code>.
             Easy to share, easy to remember.
           </p>
 
@@ -34,52 +34,52 @@ export default function AppHomePage() {
           </div>
 
           {isDemo && (
-            <p className="text-sm text-muted-foreground mt-4">
+            <p className="text-sm text-gray-500 mt-4">
               Try searching for &ldquo;alice&rdquo;, &ldquo;bob&rdquo;, or &ldquo;canton-dev&rdquo; to see demo results
             </p>
           )}
         </div>
       </section>
 
-      <section className="py-16 border-t border-border">
+      <section className="py-16 border-t border-gray-100">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-2xl font-bold text-center mb-12">How It Works</h2>
+          <h2 className="text-2xl font-bold text-center mb-12 text-gray-900">How It Works</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-secondary/30">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-                  <Search className="h-6 w-6 text-primary" />
+                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center mb-4">
+                  <Search className="h-6 w-6 text-indigo-600" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Search</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-lg font-semibold mb-2 text-gray-900">Search</h3>
+                <p className="text-gray-600">
                   Find available names instantly. Names end with{' '}
-                  <code className="text-sm">{CNS_SUFFIX}</code> to indicate they 
+                  <code className="text-sm text-indigo-600 bg-indigo-50 px-1 rounded">{CNS_SUFFIX}</code> to indicate they 
                   have not been identity-verified.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-secondary/30">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-                  <Zap className="h-6 w-6 text-primary" />
+                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center mb-4">
+                  <Zap className="h-6 w-6 text-indigo-600" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Register</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-lg font-semibold mb-2 text-gray-900">Register</h3>
+                <p className="text-gray-600">
                   Connect your Canton wallet, pay a small Canton Coin fee, and 
                   the name is yours. Renewals are handled through your wallet.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-secondary/30">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-                  <Globe className="h-6 w-6 text-primary" />
+                <div className="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center mb-4">
+                  <Globe className="h-6 w-6 text-indigo-600" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Share</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-lg font-semibold mb-2 text-gray-900">Share</h3>
+                <p className="text-gray-600">
                   Share your name instead of a complex party ID. Anyone can 
                   resolve it to find your Canton Network identity.
                 </p>
@@ -89,16 +89,16 @@ export default function AppHomePage() {
         </div>
       </section>
 
-      <section className="py-16 border-t border-border">
+      <section className="py-16 border-t border-gray-100">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <Card className="bg-secondary/30">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="py-8 text-center">
-              <div className="w-12 h-12 rounded-lg bg-warning/20 flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-6 w-6 text-warning" />
+              <div className="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center mx-auto mb-4">
+                <Shield className="h-6 w-6 text-amber-600" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">About &ldquo;Unverified&rdquo; Names</h3>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                All user-registered names include <code>{CNS_SUFFIX}</code> because 
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">About &ldquo;Unverified&rdquo; Names</h3>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                All user-registered names include <code className="text-indigo-600 bg-indigo-50 px-1 rounded">{CNS_SUFFIX}</code> because 
                 no real-world identity verification is performed. Anyone with Canton 
                 Coin can register any available name. This does not mean the name is 
                 suspicious—just that the Canton Network has not verified who owns it.
