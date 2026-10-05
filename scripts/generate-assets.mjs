@@ -139,6 +139,24 @@ async function main() {
   }
   console.log('  Saved: app-demo-ok.png');
 
+  const saveClip = async (filename) => {
+    if (cardBox) {
+      await appPage.screenshot({
+        path: `${OUTPUT_DIR}/${filename}`,
+        clip: { x: Math.max(0, cardBox.x - 20), y: Math.max(0, cardBox.y - 20), width: Math.min(cardBox.width + 40, 1240), height: Math.min(cardBox.height + 40, 760) },
+      });
+    } else {
+      await appPage.screenshot({
+        path: `${OUTPUT_DIR}/${filename}`,
+        clip: { x: 0, y: 0, width: 1280, height: 800 },
+      });
+    }
+    console.log(`  Saved: ${filename}`);
+  };
+
+  console.log('Capturing package-demo-ok.png...');
+  await saveClip('package-demo-ok.png');
+
   // App demo - alice.unverified.cns (unverified status - requires confirm)
   console.log('Capturing app-demo-confirm.png...');
   await input.fill('alice');
@@ -156,6 +174,9 @@ async function main() {
     });
   }
   console.log('  Saved: app-demo-confirm.png');
+
+  console.log('Capturing package-demo-confirm.png...');
+  await saveClip('package-demo-confirm.png');
 
   // App register
   console.log('Capturing app-register.png...');
