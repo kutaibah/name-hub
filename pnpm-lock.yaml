@@ -1,1 +1,4 @@
-__LOAD_FROM__/workspace/pnpm-lock.yaml__
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
