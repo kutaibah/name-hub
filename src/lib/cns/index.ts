@@ -33,7 +33,9 @@ export {
   CNS_SUFFIX,
   CNS_SUFFIX_UNVERIFIED,
   CNS_SUFFIX_VERIFIED,
-} from './resolve-contract';
+  configureResolver,
+  resolve,
+} from '@canton-names/resolver';
 export {
   DemoResolver,
   LiveResolver,
@@ -42,4 +44,4 @@ export {
   validateResolveResult,
   validateDemoEntries,
   DEMO_ENTRIES,
-} from './resolvers';
+} from '@canton-names/resolver';

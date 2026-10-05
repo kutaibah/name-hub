@@ -2,6 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
+import '@/lib/cns/resolver-init';
+import '@canton-names/resolver/styles.css';
 import { AuthProvider } from '@/lib/cns/auth-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
