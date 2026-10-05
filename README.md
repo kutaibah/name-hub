@@ -1,205 +1,169 @@
 # Canton Names
 
-A web client for searching, registering, managing, and resolving Canton Name Service (CNS) names on the Canton Network.
+**Safe recipient resolution for Canton apps** — a drop-in field and typed resolver so users send transfers to readable names, not raw party IDs, with warnings and blocks before money moves to the wrong party.
 
-**Hackathon MVP** for AppsFactory Open Track.
+> **Lookup is the product. Registration is support. Safety is the differentiator.**
 
-## What is Canton Names?
+This repo is **developer-first**: the npm package and resolve contract are the product. The web app is a demo shell, docs, and optional registration support — not a consumer name marketplace.
 
-Canton Names helps Canton Network users replace hard-to-share party identifiers with readable names. Instead of sharing `auth0_007c675a429eaf831f0991308d85::12201abe669f...`, you can share `alice.unverified.cns`.
+---
 
-## Features
+## npm package (start here)
 
-- **Search**: Find available names with real-time availability checking
-- **Register**: Multi-step registration flow with wallet integration
-- **Manage**: View your registered names and their status
-- **Share**: Shareable links and QR codes for name details
-- **Resolve**: Reusable `CnsRecipientInput` component for integration
+| | |
+|---|---|
+| **Package** | [`@canton-names/resolver@0.1.2`](https://www.npmjs.com/package/@canton-names/resolver) |
+| **Install** | `npm install @canton-names/resolver` |
 
-## Quick Start
-
-### Prerequisites
-
-- Node.js 20+
-- pnpm 10+
-
-### Installation
+**Goal:** install → drop in `CnsRecipientInput` → resolve a readable name with the correct warning state in **under 5 minutes** (demo mode, no network credentials).
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd canton-names
+npm install @canton-names/resolver
+```
 
-# Install dependencies
+```tsx
+'use client';
+
+import { useState } from 'react';
+import { configureResolver, resolve } from '@canton-names/resolver';
+import { CnsRecipientInput } from '@canton-names/resolver/react';
+import '@canton-names/resolver/styles.css';
+
+configureResolver({ mode: 'demo' }); // default for quickstart
+
+export function TransferForm() {
+  const [partyId, setPartyId] = useState<string | null>(null);
+
+  return (
+    <form>
+      <CnsRecipientInput
+        label="Recipient"
+        onChange={({ partyId }) => setPartyId(partyId)}
+      />
+      <button type="submit" disabled={!partyId}>Send</button>
+    </form>
+  );
+}
+```
+
+Headless use:
+
+```ts
+import { configureResolver, resolve } from '@canton-names/resolver';
+
+configureResolver({ mode: 'demo' });
+const result = await resolve('bank');
+```
+
+- **Exports:** `@canton-names/resolver` (contract, `configureResolver`, `resolve`, demo/live resolvers, cache) · `@canton-names/resolver/react` (`CnsRecipientInput`) · `@canton-names/resolver/styles.css` (no Tailwind required)
+- **More detail:** [packages/resolver/README.md](./packages/resolver/README.md) · hosted quickstart at `/docs` when running this app
+
+---
+
+## Resolve contract
+
+Statuses: `ok` | `missing` | `expired` | `unverified` | `changed`
+
+| Status | `partyId` | Confirm before send? | Block send? | When |
+|--------|-----------|----------------------|-------------|------|
+| `ok` | yes | no | no | Safe to use (e.g. verified `bank.cns`) |
+| `unverified` | yes | **yes** | no | Name exists; not identity-verified (`.unverified.cns`) |
+| `changed` | yes | **yes** | no | Party ID differs from **last known resolution** (options + local cache) |
+| `missing` | no | no | **yes** | Not found, invalid input, party not found, or `RESOLVER_UNAVAILABLE` |
+| `expired` | no | no | **yes** | Name past expiry |
+
+**Rules**
+
+- **Confirm** only for `unverified` and `changed`. The `onChange` callback exposes a usable `partyId` only after `ok`, or after the user confirms.
+- **Block** for `missing`, `expired`, invalid input, and resolver unavailable.
+- **`changed`** compares the resolved party ID to the caller’s `lastKnown` / `knownPartyId` and the package’s last-known cache — not a generic “name changed” flag.
+
+**Demo fixtures** (with `configureResolver({ mode: 'demo' })`):
+
+| Try | Resolves to | UI |
+|-----|-------------|-----|
+| `bank` / `bank.cns` | `ok` (verified) | Ready to send — **Verified** only on `.cns`, never on `.unverified.cns` |
+| `alice` / `alice.unverified.cns` | `unverified` | Amber — user must confirm |
+| `changed-party` | `changed` | Confirm party ID change |
+| `expired-name` | `expired` | Blocked |
+| unknown name | `missing` | Blocked |
+
+---
+
+## This monorepo (secondary)
+
+Hackathon MVP workspace: the **resolver package** plus a Next.js demo UI.
+
+| Area | URL (local `pnpm dev`, port **3847**) |
+|------|----------------------------------------|
+| Marketing | `/` |
+| 5-minute docs | `/docs` |
+| Demo app (search, integration mock transfer) | `/app`, `/app/demo/recipient` |
+| Registration (supporting flow, demo/simulated) | `/app/register` |
+
+**Demo mode is the default** for the app and package quickstart: simulated data and payments, not live Canton Network registration or production transfers.
+
+### Run the app
+
+```bash
 pnpm install
-
-# Start development server
 pnpm dev
 ```
 
-The app runs at [http://localhost:3847](http://localhost:3847).
+Open [http://localhost:3847](http://localhost:3847). Node 20+, pnpm 10+.
 
-### Routes
+### Live resolver (optional)
 
-| Route | Description |
-|-------|-------------|
-| `/` | Marketing landing page |
-| `/app` | Application home (search for names) |
-| `/app/register` | Name registration flow |
-| `/app/names` | Your registered names |
-| `/app/name/[name]` | Name details and sharing |
-| `/app/demo/recipient` | Integration component demo |
-| `/docs` | Documentation |
-| `/privacy` | Privacy policy |
-| `/terms` | Terms of service |
+For Scan API lookups instead of demo fixtures, set in `.env.local`:
 
-### Demo Mode
-
-By default, the app runs in **demo mode** with simulated data. This allows you to explore all features without connecting to the Canton Network.
-
-Demo names available:
-- `alice.unverified.cns`
-- `bob.unverified.cns`
-- `canton-dev.unverified.cns`
-
-Use the Demo Controls panel (bottom-right) to test different registration scenarios.
-
-### Resolve API
-
-Canton Names provides a typed resolve contract for safe recipient resolution:
-
-```typescript
-import { getResolver, type ResolveResult } from '@/lib/cns';
-
-const resolver = getResolver();
-const result = await resolver.resolve('alice');
-
-// result.status: 'ok' | 'missing' | 'expired' | 'unverified' | 'changed'
-// result.partyId: string | null (null when blocked)
-// result.requiresConfirmation: boolean (true for unverified/changed)
-// result.blocking: boolean (true for missing/expired)
-```
-
-**Status behavior:**
-- `ok`: Party ID usable immediately
-- `unverified/changed`: Requires user confirmation before use
-- `missing/expired`: Blocked, cannot proceed
-
-See [docs/resolve-api.md](./docs/resolve-api.md) for full documentation.
-
-### Live Mode
-
-To connect to a real Canton Network:
-
-1. Create `.env.local`:
 ```env
 NEXT_PUBLIC_CNS_MODE=live
 NEXT_PUBLIC_SCAN_API_URL=https://scan.sv-1.global.canton.network.sync.global/api/scan
-NEXT_PUBLIC_VALIDATOR_API_URL=<your-validator-url>
-NEXT_PUBLIC_NETWORK_NAME=DevNet
 ```
 
-2. Ensure you have:
-   - A Canton wallet with Canton Coin
-   - Access to a Validator App with ANS API
+You need appropriate network access and wallet/validator setup; this repo does not claim live-network registration or production readiness.
+
+---
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Create production build |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm typecheck` | Run TypeScript type checking |
-| `pnpm test` | Run Vitest tests |
+| `pnpm dev` | Dev server (builds resolver first) |
+| `pnpm build` | Build resolver + Next.js production bundle |
+| `pnpm start` | Production server |
+| `pnpm test` | Package (44) + app (55) Vitest tests |
+| `pnpm typecheck` | TypeScript |
+| `pnpm lint` | ESLint |
+| `pnpm build:resolver` | Build `@canton-names/resolver` only |
 
-## Project Structure
+---
+
+## Project structure
 
 ```
+packages/resolver/     # @canton-names/resolver (published)
 src/
-├── app/
-│   ├── layout.tsx          # Root layout
-│   ├── (marketing)/        # Marketing pages (light theme)
-│   │   ├── layout.tsx      # Marketing layout with header/footer
-│   │   ├── page.tsx        # Landing page (/)
-│   │   ├── docs/           # Documentation (/docs)
-│   │   ├── privacy/        # Privacy policy (/privacy)
-│   │   └── terms/          # Terms of service (/terms)
-│   └── (app)/              # App routes (dark theme)
-│       └── app/
-│           ├── page.tsx    # App home / Search (/app)
-│           ├── register/   # Registration flow (/app/register)
-│           ├── names/      # My Names list (/app/names)
-│           ├── name/[name]/ # Name details (/app/name/[name])
-│           └── demo/recipient/ # Integration showcase
-├── components/
-│   ├── cns/                # CNS-specific components
-│   │   ├── name-search.tsx
-│   │   ├── cns-recipient-input.tsx
-│   │   ├── registration-flow.tsx
-│   │   ├── name-details.tsx
-│   │   └── ...
-│   ├── layout/             # Layout components
-│   │   └── app-header.tsx  # App header with navigation
-│   └── ui/                 # shadcn/ui components
-├── config/
-│   └── site.ts             # Site configuration
-├── lib/
-│   ├── cns/                # CNS core logic
-│   │   ├── types.ts        # Types and validation
-│   │   ├── adapter.ts      # Live/demo adapters
-│   │   ├── config.ts       # Environment config
-│   │   └── ...
-│   └── hooks/              # React hooks
-└── __tests__/              # Vitest tests
+  app/(marketing)/     # /, /docs, legal
+  app/(app)/app/       # Demo UI: search, register, integration demo
+  components/cns/      # App wrappers; integration uses the npm package
+  lib/cns/             # App adapters, registration, config
 ```
 
-## Architecture
+---
 
-See [docs/architecture.md](docs/architecture.md) for detailed architecture documentation.
+## Tech stack
 
-## Integration
+Next.js 16 (App Router), TypeScript, Tailwind + shadcn/ui (demo app only), TanStack Query, Zod, Vitest.
 
-The `CnsRecipientInput` component is designed for reuse in other Canton applications:
+Further notes: [docs/architecture.md](./docs/architecture.md), [docs/integration-findings.md](./docs/integration-findings.md).
 
-```tsx
-import { CnsRecipientInput } from '@/components/cns/cns-recipient-input';
-
-<CnsRecipientInput
-  label="Recipient"
-  description="Enter a CNS name"
-  onSelect={(resolved) => {
-    console.log('Party ID:', resolved.partyId);
-  }}
-/>
-```
-
-See the Integration Demo at `/app/demo/recipient` for a live example.
-
-## Documentation
-
-- [Integration Findings](docs/integration-findings.md) - CNS API documentation
-- [Architecture](docs/architecture.md) - System architecture
-- [Demo Script](docs/demo-script.md) - 3-minute demo walkthrough
-- [Hackathon Brief](docs/hackathon-brief.md) - Problem, solution, value proposition
-- [Pilot Plan](docs/pilot-plan.md) - Post-hackathon deployment plan
-
-## Tech Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS + shadcn/ui
-- **State**: TanStack Query
-- **Validation**: Zod
-- **Testing**: Vitest
+---
 
 ## License
 
-MIT
+MIT — see [packages/resolver/LICENSE](./packages/resolver/LICENSE).
 
 ## Disclaimer
 
-This is a hackathon MVP. Canton Names is not affiliated with Digital Asset, Canton Network, or the Decentralized Synchronizer Operator (DSO).
-
-"Unverified" names indicate that no identity verification was performed. Anyone with Canton Coin can register any available name.
+Hackathon / demo software. Not affiliated with Digital Asset, Canton Network, or the DSO. Names ending in `.unverified.cns` are not identity-verified; anyone with Canton Coin could register an available name in a live deployment. Do not treat demo resolution or registration as proof of real-world ownership.

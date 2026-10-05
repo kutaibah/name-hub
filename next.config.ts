@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ['@canton-names/resolver'],
   async rewrites() {
     return [
       {

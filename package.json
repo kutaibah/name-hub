@@ -4,15 +4,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3847",
+    "predev": "pnpm --filter @canton-names/resolver build",
     "prebuild": "cp docs/pitches/canton-names-pitch.html public/pitch/index.html && cp docs/pitches/pitch-judges/pitch-judges.html public/pitch-judges/index.html",
-    "build": "next build",
+    "build:resolver": "pnpm --filter @canton-names/resolver build",
+    "build": "pnpm build:resolver && next build",
+    "test": "pnpm --filter @canton-names/resolver test && vitest run",
+    "test:app": "vitest run",
     "start": "next start --port 3847",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@canton-names/resolver": "workspace:*",
     "@base-ui/react": "^1.8.0",
     "@tanstack/react-query": "^5.62.0",
     "class-variance-authority": "^0.7.1",
