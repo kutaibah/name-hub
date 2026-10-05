@@ -1,12 +1,16 @@
 {
   "name": "@canton-names/resolver",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Typed Canton name resolution with safe recipient UI — lookup is the product, safety is the differentiator.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/canton-names/canton-names.git",
+    "url": "https://github.com/kutaibah/name-hub.git",
     "directory": "packages/resolver"
+  },
+  "homepage": "https://github.com/kutaibah/name-hub#readme",
+  "bugs": {
+    "url": "https://github.com/kutaibah/name-hub/issues"
   },
   "keywords": [
     "canton",
