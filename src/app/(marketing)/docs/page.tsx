@@ -36,7 +36,7 @@ export default function DocsPage() {
         </div>
       </div>
 
-      {/* truncated - use file instead */}
+      {/* NOTE: content continues - use file from disk */}
     </div>
   );
 }
