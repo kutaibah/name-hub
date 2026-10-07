@@ -31,7 +31,7 @@ export default function DocsPage() {
             className="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:underline"
           >
             <Presentation className="mr-1.5 h-4 w-4" />
-            View pitch deck
+            Product overview
           </Link>
         </div>
       </div>
@@ -302,10 +302,12 @@ if (result.status === 'ok') {
           href="/pitch"
           className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors"
         >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Pitch Deck</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">12-slide presentation covering problem, solution, and roadmap.</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Product overview</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Shareable summary for judges and partners—problem, resolver approach, and proof.
+          </p>
           <span className="inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400">
-            View deck
+            Read overview
             <ArrowRight className="ml-1 h-3 w-3" />
           </span>
         </Link>
