@@ -28,12 +28,18 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             </Link>
             
             <nav className="hidden md:flex items-center gap-6">
-              <a
-                href="#features"
+              <Link
+                href="/#demo"
                 className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
               >
-                Product
-              </a>
+                Demo
+              </Link>
+              <Link
+                href="/#quickstart"
+                className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              >
+                Quickstart
+              </Link>
               <Link
                 href="/docs"
                 className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
@@ -44,17 +50,17 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                 href="/app"
                 className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
               >
-                Sign in
+                App
               </Link>
             </nav>
           </div>
           
           <div className="flex items-center gap-4">
             <Link
-              href="/app"
+              href="/docs"
               className="hidden md:inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
             >
-              Get started
+              Install
             </Link>
             
             <button
@@ -70,13 +76,20 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-100 bg-white">
             <nav className="flex flex-col px-4 py-4 space-y-3">
-              <a
-                href="#features"
+              <Link
+                href="/#demo"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-sm font-medium text-gray-600 hover:text-gray-900"
               >
-                Product
-              </a>
+                Demo
+              </Link>
+              <Link
+                href="/#quickstart"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Quickstart
+              </Link>
               <Link
                 href="/docs"
                 onClick={() => setMobileMenuOpen(false)}
@@ -85,18 +98,11 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                 Docs
               </Link>
               <Link
-                href="/app"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/app"
+                href="/docs"
                 onClick={() => setMobileMenuOpen(false)}
                 className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
               >
-                Get started
+                Install
               </Link>
             </nav>
           </div>
@@ -122,7 +128,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                 <span className="font-semibold text-gray-900">{siteConfig.name}</span>
               </Link>
               <p className="mt-2 text-sm text-gray-500 max-w-xs">
-                Readable names for Canton party IDs.
+                Safe recipient resolution for Canton app developers.
               </p>
             </div>
             

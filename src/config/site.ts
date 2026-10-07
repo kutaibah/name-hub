@@ -4,7 +4,7 @@ export const siteConfig = {
     'Readable names for Canton party IDs. Replace long, error-prone identifiers with simple names.',
   url: 'https://cantonnames.dev',
   links: {
-    github: '', // Set to real URL when available (e.g. 'https://github.com/org/canton-names')
+    github: 'https://github.com/kutaibah/name-hub',
     docs: '/docs',
     app: '/app',
   },
