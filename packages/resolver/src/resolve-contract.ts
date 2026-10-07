@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import { getUnverifiedSuffix, getVerifiedSuffix, CNS_SUFFIX_UNVERIFIED } from './ans-suffix';
+
+export { CNS_SUFFIX_UNVERIFIED, CNS_SUFFIX_VERIFIED } from './ans-suffix';
+/** @deprecated Use CNS_SUFFIX_UNVERIFIED */
+export const CNS_SUFFIX = CNS_SUFFIX_UNVERIFIED;
 
 /**
  * Reason codes for resolution outcomes.
@@ -78,6 +83,7 @@ export const LastKnownResolutionSchema = z.object({
   name: z.string(),
   partyId: z.string(),
   resolvedAt: z.string().datetime(),
+  expiresAt: z.string().datetime().optional().nullable(),
 });
 
 export type LastKnownResolution = z.infer<typeof LastKnownResolutionSchema>;
@@ -203,21 +209,6 @@ export interface Resolver {
 }
 
 /**
- * CNS name suffix for unverified names.
- */
-export const CNS_SUFFIX_UNVERIFIED = '.unverified.cns';
-
-/**
- * CNS name suffix for verified names.
- */
-export const CNS_SUFFIX_VERIFIED = '.cns';
-
-/**
- * @deprecated Use CNS_SUFFIX_UNVERIFIED instead
- */
-export const CNS_SUFFIX = CNS_SUFFIX_UNVERIFIED;
-
-/**
  * Pattern for valid CNS names (without suffix).
  */
 const NAME_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
@@ -252,12 +243,15 @@ export function normalizeInput(input: string, kind: InputKind): string {
     return trimmed;
   }
   let normalized = trimmed.toLowerCase();
-  // If already has a .cns suffix (verified or unverified), keep it
-  if (normalized.endsWith(CNS_SUFFIX_VERIFIED)) {
+  const unverifiedSuffix = getUnverifiedSuffix();
+  const verifiedSuffix = getVerifiedSuffix();
+  if (normalized.endsWith(unverifiedSuffix)) {
     return normalized;
   }
-  // Otherwise, default to unverified suffix for lookup
-  normalized = `${normalized}${CNS_SUFFIX_UNVERIFIED}`;
+  if (normalized.endsWith(verifiedSuffix)) {
+    return normalized;
+  }
+  normalized = `${normalized}${unverifiedSuffix}`;
   return normalized;
 }
 
@@ -276,10 +270,12 @@ export function parseInput(raw: string): ResolveInput {
 export function validateCnsName(name: string): { valid: true } | { valid: false; reason: string } {
   let baseName = name.trim().toLowerCase();
   // Strip both verified and unverified suffixes (check unverified first as it's longer)
-  if (baseName.endsWith(CNS_SUFFIX_UNVERIFIED)) {
-    baseName = baseName.slice(0, -CNS_SUFFIX_UNVERIFIED.length);
-  } else if (baseName.endsWith(CNS_SUFFIX_VERIFIED)) {
-    baseName = baseName.slice(0, -CNS_SUFFIX_VERIFIED.length);
+  const unverifiedSuffix = getUnverifiedSuffix();
+  const verifiedSuffix = getVerifiedSuffix();
+  if (baseName.endsWith(unverifiedSuffix)) {
+    baseName = baseName.slice(0, -unverifiedSuffix.length);
+  } else if (baseName.endsWith(verifiedSuffix)) {
+    baseName = baseName.slice(0, -verifiedSuffix.length);
   }
 
   if (baseName.length < 3) {
@@ -507,7 +503,11 @@ export function getCachedLastKnown(normalizedName: string): LastKnownResolution 
 /**
  * Cache a resolution as last-known for a name.
  */
-export function setCachedLastKnown(normalizedName: string, partyId: string): void {
+export function setCachedLastKnown(
+  normalizedName: string,
+  partyId: string,
+  expiresAt?: string | null
+): void {
   const storage = getStorage();
   if (!storage) return;
   try {
@@ -515,6 +515,7 @@ export function setCachedLastKnown(normalizedName: string, partyId: string): voi
       name: normalizedName,
       partyId,
       resolvedAt: nowISO(),
+      expiresAt: expiresAt ?? null,
     };
     storage.setItem(`${LAST_KNOWN_CACHE_PREFIX}${normalizedName}`, JSON.stringify(entry));
   } catch {

@@ -3,5 +3,6 @@ import { cnsConfig } from './config';
 
 configureResolver({
   mode: cnsConfig.isDemo ? 'demo' : 'live',
-  scanApiUrl: cnsConfig.scanApiUrl,
+  liveTransport: 'http-endpoint',
+  httpResolveUrl: cnsConfig.httpResolveUrl,
 });
