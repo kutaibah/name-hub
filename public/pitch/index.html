@@ -14,13 +14,12 @@
       --border: #e5e7eb;
       --code-bg: #f3f4f6;
       --slide-bg: #ffffff;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       height: 100%;
@@ -30,393 +29,76 @@
       line-height: 1.6;
     }
 
-    .deck {
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
+    .deck { height: 100vh; overflow: hidden; position: relative; }
 
     .slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      padding: 4rem 6rem;
-      display: none;
-      flex-direction: column;
-      background: var(--slide-bg);
-      overflow-y: auto;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      padding: 3.5rem 5rem; display: none; flex-direction: column;
+      background: var(--slide-bg); overflow-y: auto;
     }
 
-    .slide.active {
-      display: flex;
-    }
+    .slide.active { display: flex; }
 
-    .slide h1 {
-      font-size: 2.75rem;
-      font-weight: 700;
-      color: var(--fg);
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02em;
-    }
+    .slide h1 { font-size: 2.5rem; font-weight: 700; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    .slide h2 { font-size: 1.35rem; font-weight: 400; color: var(--accent); margin-bottom: 1.5rem; }
+    .slide h3 { font-size: 1.15rem; font-weight: 600; color: var(--fg); margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .slide p { font-size: 1.15rem; color: var(--muted); margin-bottom: 0.75rem; max-width: 48rem; }
+    .slide ul, .slide ol { font-size: 1.15rem; color: var(--muted); margin-left: 1.5rem; margin-bottom: 0.75rem; }
+    .slide li { margin-bottom: 0.35rem; }
+    .slide code { font-family: 'SF Mono', Monaco, monospace; background: var(--code-bg); padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.9em; color: var(--accent); }
+    .slide pre { background: #1e293b; color: #e2e8f0; padding: 1.25rem; border-radius: 0.75rem; overflow-x: auto; margin: 0.75rem 0; font-size: 0.95rem; line-height: 1.5; }
+    .slide pre code { background: none; padding: 0; color: inherit; }
+    .slide table { border-collapse: collapse; margin: 0.75rem 0; font-size: 1rem; }
+    .slide th, .slide td { text-align: left; padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); }
+    .slide th { font-weight: 600; color: var(--fg); background: var(--accent-light); }
+    .slide td { color: var(--muted); }
+    .slide .big-text { font-size: 1.5rem; color: var(--fg); font-weight: 500; }
+    .slide .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.75rem 1.25rem; border-radius: 0 0.5rem 0.5rem 0; margin: 0.75rem 0; }
+    .slide .warning p { color: #92400e; margin: 0; font-size: 1rem; }
 
-    .slide h2 {
-      font-size: 1.5rem;
-      font-weight: 400;
-      color: var(--accent);
-      margin-bottom: 2rem;
-    }
+    .title-slide { justify-content: center; align-items: center; text-align: center; }
+    .title-slide h1 { font-size: 3.5rem; margin-bottom: 0.75rem; }
+    .title-slide h2 { font-size: 1.75rem; margin-bottom: 1.5rem; }
+    .title-slide p { font-size: 1.35rem; max-width: 52rem; }
+    .title-slide .logo { width: 4.5rem; height: 4.5rem; margin-bottom: 1.5rem; }
+    .title-slide .logo svg { width: 100%; height: 100%; }
 
-    .slide h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--fg);
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 0.75rem; }
 
-    .slide p {
-      font-size: 1.25rem;
-      color: var(--muted);
-      margin-bottom: 1rem;
-      max-width: 48rem;
-    }
+    .mockup { background: white; border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .mockup-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.75rem; }
+    .mockup-input { background: var(--code-bg); border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.5rem 0.75rem; margin-bottom: 0.75rem; font-family: monospace; font-size: 0.85rem; color: var(--muted); }
+    .mockup-result { border-radius: 0.375rem; padding: 0.75rem; margin-bottom: 0.5rem; }
+    .mockup-result.success { border: 2px solid var(--success); background: #ecfdf5; }
+    .mockup-result.warning { border: 2px solid var(--warning); background: #fffbeb; }
+    .mockup-result.danger { border: 2px solid var(--danger); background: #fef2f2; }
+    .mockup-result code { font-size: 0.85rem; background: white; padding: 0.125rem 0.375rem; border-radius: 0.25rem; border: 1px solid var(--border); }
+    .mockup-badge { font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 9999px; color: white; }
+    .mockup-badge.success { background: var(--success); }
+    .mockup-badge.warning { background: var(--warning); }
+    .mockup-badge.danger { background: var(--danger); }
+    .mockup-msg { font-size: 0.8rem; margin-top: 0.5rem; font-weight: 500; }
+    .mockup-msg.success { color: #047857; }
+    .mockup-msg.warning { color: #b45309; }
+    .mockup-msg.danger { color: #b91c1c; }
+    .mockup-btn { margin-top: 0.75rem; padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.8rem; font-weight: 500; border: none; cursor: pointer; }
+    .mockup-btn.enabled { background: var(--accent); color: white; }
+    .mockup-btn.disabled { background: var(--border); color: var(--muted); }
 
-    .slide ul, .slide ol {
-      font-size: 1.25rem;
-      color: var(--muted);
-      margin-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .slide li {
-      margin-bottom: 0.5rem;
-    }
-
-    .slide code {
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-      background: var(--code-bg);
-      padding: 0.125rem 0.375rem;
-      border-radius: 0.25rem;
-      font-size: 0.9em;
-      color: var(--accent);
-    }
-
-    .slide pre {
-      background: #1e293b;
-      color: #e2e8f0;
-      padding: 1.5rem;
-      border-radius: 0.75rem;
-      overflow-x: auto;
-      margin: 1rem 0;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    .slide pre code {
-      background: none;
-      padding: 0;
-      color: inherit;
-    }
-
-    .slide table {
-      border-collapse: collapse;
-      margin: 1rem 0;
-      font-size: 1.1rem;
-    }
-
-    .slide th, .slide td {
-      text-align: left;
-      padding: 0.75rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .slide th {
-      font-weight: 600;
-      color: var(--fg);
-      background: var(--accent-light);
-    }
-
-    .slide td {
-      color: var(--muted);
-    }
-
-    .slide .highlight {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .slide .big-text {
-      font-size: 1.75rem;
-      color: var(--fg);
-      font-weight: 500;
-    }
-
-    .slide .warning {
-      background: #fef3c7;
-      border-left: 4px solid #f59e0b;
-      padding: 1rem 1.5rem;
-      border-radius: 0 0.5rem 0.5rem 0;
-      margin: 1rem 0;
-    }
-
-    .slide .warning p {
-      color: #92400e;
-      margin: 0;
-      font-size: 1.1rem;
-    }
-
-    .title-slide {
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    .title-slide h1 {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-    }
-
-    .title-slide h2 {
-      font-size: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .title-slide p {
-      font-size: 1.5rem;
-      max-width: 56rem;
-    }
-
-    .title-slide .logo {
-      width: 5rem;
-      height: 5rem;
-      margin-bottom: 2rem;
-    }
-    
-    .title-slide .logo svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      margin-top: 1rem;
-    }
-
-    .mockup {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-    }
-
-    .mockup-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-
-    .mockup-before {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1rem;
-      font-family: monospace;
-      font-size: 0.875rem;
-      color: var(--muted);
-      word-break: break-all;
-    }
-
-    .mockup-after {
-      background: var(--accent-light);
-      border: 2px solid var(--accent);
-      border-radius: 0.5rem;
-      padding: 0.75rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .mockup-after code {
-      font-size: 1rem;
-      font-weight: 500;
-      background: none;
-      padding: 0;
-    }
-
-    .mockup-badge {
-      background: #dcfce7;
-      color: #166534;
-      font-size: 0.75rem;
-      font-weight: 500;
-      padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .controls {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      display: flex;
-      gap: 0.5rem;
-      z-index: 100;
-    }
-
-    .controls button {
-      width: 3rem;
-      height: 3rem;
-      border: 1px solid var(--border);
-      background: white;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-size: 1.25rem;
-      color: var(--muted);
-      transition: all 0.15s;
-    }
-
-    .controls button:hover {
-      background: var(--accent-light);
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .progress {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      height: 4px;
-      background: var(--accent);
-      transition: width 0.3s ease;
-    }
-
-    .slide-number {
-      position: fixed;
-      bottom: 2rem;
-      left: 2rem;
-      font-size: 0.875rem;
-      color: var(--muted);
-    }
-
-    .routes-list {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 0.5rem 1.5rem;
-      margin: 1rem 0;
-    }
-
-    .routes-list code {
-      font-size: 1rem;
-    }
-
-    .routes-list span {
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    .flow-steps {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-      margin: 1.5rem 0;
-    }
-
-    .flow-step {
-      background: var(--accent-light);
-      color: var(--accent);
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      font-weight: 500;
-    }
-
-    .flow-arrow {
-      color: var(--muted);
-    }
-
-    @media (max-width: 1024px) {
-      .slide {
-        padding: 2rem 3rem;
-      }
-      .slide h1 {
-        font-size: 2rem;
-      }
-      .title-slide h1 {
-        font-size: 2.5rem;
-      }
-      .two-col {
-        grid-template-columns: 1fr;
-      }
-    }
+    .controls { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 100; }
+    .controls button { width: 2.5rem; height: 2.5rem; border: 1px solid var(--border); background: white; border-radius: 0.375rem; cursor: pointer; font-size: 1rem; color: var(--muted); transition: all 0.15s; }
+    .controls button:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+    .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent); transition: width 0.3s ease; }
+    .slide-number { position: fixed; bottom: 1.5rem; left: 1.5rem; font-size: 0.8rem; color: var(--muted); }
 
     @media print {
-      @page {
-        size: 1280px 720px;
-        margin: 0;
-      }
-
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-
-      html, body {
-        width: 1280px !important;
-        height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: var(--bg) !important;
-      }
-
-      .deck {
-        width: 1280px !important;
-        height: auto !important;
-        overflow: visible !important;
-        position: static !important;
-      }
-
-      .slide {
-        position: relative !important;
-        display: flex !important;
-        width: 1280px !important;
-        height: 720px !important;
-        min-height: 720px !important;
-        max-height: 720px !important;
-        page-break-after: always !important;
-        page-break-inside: avoid !important;
-        break-after: page !important;
-        break-inside: avoid !important;
-        overflow: hidden !important;
-        padding: 3rem 5rem !important;
-        margin: 0 !important;
-        background: var(--slide-bg) !important;
-        box-sizing: border-box !important;
-      }
-
-      .slide:last-child {
-        page-break-after: auto !important;
-      }
-
-      .controls,
-      .slide-number,
-      .progress {
-        display: none !important;
-      }
-
-      .title-slide {
-        justify-content: center !important;
-        align-items: center !important;
-        text-align: center !important;
-      }
+      @page { size: 960px 540px; margin: 0; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      html, body { width: 960px !important; height: auto !important; margin: 0 !important; padding: 0 !important; }
+      .deck { width: 960px !important; height: auto !important; overflow: visible !important; position: static !important; }
+      .slide { position: relative !important; display: flex !important; width: 960px !important; height: 540px !important; min-height: 540px !important; max-height: 540px !important; page-break-after: always !important; break-after: page !important; overflow: hidden !important; padding: 2.5rem 3.5rem !important; margin: 0 !important; }
+      .slide:last-child { page-break-after: auto !important; }
+      .controls, .slide-number, .progress { display: none !important; }
     }
   </style>
 </head>
@@ -427,49 +109,58 @@
     <div class="slide title-slide active" data-slide="1">
       <div class="logo">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <defs>
-            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#4F46E5"/>
-              <stop offset="100%" stop-color="#7C3AED"/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#7C3AED"/></linearGradient></defs>
           <rect width="64" height="64" rx="14" fill="url(#logo-gradient)"/>
-          <circle cx="10" cy="32" r="2" fill="white"/>
-          <circle cx="17" cy="32" r="2" fill="white"/>
-          <rect x="22" y="30" width="5" height="4" rx="1" fill="white"/>
-          <rect x="29" y="30" width="5" height="4" rx="1" fill="white"/>
-          <path d="M36 28 L42 32 L36 36 Z" fill="white"/>
-          <path d="M45 27 L57 27 Q59 27 59 29 L59 35 Q59 37 57 37 L45 37 L41 32 Z" fill="white"/>
+          <circle cx="10" cy="32" r="2" fill="white"/><circle cx="17" cy="32" r="2" fill="white"/>
+          <rect x="22" y="30" width="5" height="4" rx="1" fill="white"/><rect x="29" y="30" width="5" height="4" rx="1" fill="white"/>
+          <path d="M36 28 L42 32 L36 36 Z" fill="white"/><path d="M45 27 L57 27 Q59 27 59 29 L59 35 Q59 37 57 37 L45 37 L41 32 Z" fill="white"/>
           <circle cx="53" cy="32" r="2.5" fill="url(#logo-gradient)"/>
         </svg>
       </div>
       <h1>Canton Names</h1>
-      <h2>Readable names for Canton party IDs</h2>
-      <p>Canton Names turns long Canton party IDs into readable names like <code>alice.unverified.cns</code>, and gives any Canton app a drop-in field that sends to the right party every time.</p>
+      <h2>Safe recipient resolution for Canton apps</h2>
+      <p>A drop-in recipient field and typed resolver that lets any Canton app accept readable names instead of party IDs — and warns or blocks before a transfer goes to the wrong party.</p>
     </div>
 
     <!-- Slide 2: Problem -->
     <div class="slide" data-slide="2">
       <h1>The Problem</h1>
-      <p class="big-text">On Canton, you send value to a long, opaque party ID:</p>
-      <pre><code>auth0_007c675a429eaf831f0991308d85::12201abe669f8c4d5e6f7a8b9c0d1e2f3a4b5c6d7...</code></pre>
-      <p class="big-text">You copy, paste, and hope you got it right.</p>
+      <p class="big-text">On Canton, sending value still depends on long, opaque party IDs:</p>
+      <pre><code>alice::1220a3f9b8c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1c7e2</code></pre>
       <div class="warning">
-        <p><strong>One wrong character</strong> → transfer fails or reaches the wrong party.</p>
+        <p><strong>One wrong character</strong> → transfer fails or reaches the wrong party. No way to verify before sending.</p>
       </div>
-      <p>CNS (Canton Name Service) exists, but search, registration, and resolution are hard to use directly.</p>
+      <p class="big-text" style="margin-top: 1.5rem;">Every Canton app that moves value faces this problem.</p>
     </div>
 
     <!-- Slide 3: Solution -->
     <div class="slide" data-slide="3">
       <h1>The Solution</h1>
-      <h2>Canton Names provides:</h2>
-      <ol>
-        <li><strong>Guided search & registration</strong> — find available names, register in minutes</li>
-        <li><strong>Shareable name pages</strong> — link + QR code for your name</li>
-        <li><strong><code>CnsRecipientInput</code></strong> — drop-in component for any Canton app</li>
-      </ol>
-      <p style="margin-top: 2rem;">The resolver warns on missing, expired, or unverified names <strong>before</strong> sending.</p>
+      <h2>Canton Names is a safe recipient resolution component</h2>
+      <div class="two-col">
+        <div>
+          <h3 style="margin-top: 0;">Drop-in CnsRecipientInput</h3>
+          <p style="font-size: 1.05rem;">One React component with built-in resolution, validation, and confirmation flows.</p>
+          <h3>Typed resolve() contract</h3>
+          <p style="font-size: 1.05rem;">Discriminated union on status (ok, missing, expired, unverified, changed) with stable reason codes.</p>
+          <h3>Transfer safety</h3>
+          <p style="font-size: 1.05rem;">Blocks missing/expired names. Requires confirmation for unverified/changed. Never sends to the wrong party.</p>
+        </div>
+        <div>
+          <div class="mockup">
+            <div class="mockup-label">CnsRecipientInput</div>
+            <div class="mockup-input">🔍 bank</div>
+            <div class="mockup-result success">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <code>bank.cns</code>
+                <span class="mockup-badge success">✓ Verified</span>
+              </div>
+              <div class="mockup-msg success">Name resolved successfully</div>
+            </div>
+            <button class="mockup-btn enabled">Send Transfer</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Slide 4: Who It's For -->
@@ -477,99 +168,120 @@
       <h1>Who It's For</h1>
       <div class="two-col">
         <div>
-          <h3>Primary: Canton app teams</h3>
-          <p>Building recipient/counterparty selection:</p>
+          <h3 style="margin-top: 0;">Primary: Canton app developers</h3>
+          <p>Frontend devs on teams moving value:</p>
           <ul>
             <li>Wallets</li>
+            <li>Payments & treasury apps</li>
             <li>Tokenization & settlement</li>
-            <li>Payments & treasury</li>
-            <li>Marketplaces</li>
+            <li>Custody dashboards</li>
           </ul>
         </div>
         <div>
-          <h3>Secondary: Party holders</h3>
-          <p>Who want shareable identities:</p>
+          <h3 style="margin-top: 0;">Secondary: Party holders</h3>
+          <p>Who want to be found by name:</p>
           <ul>
+            <li>Institutional desks</li>
             <li>Validator operators</li>
             <li>App providers</li>
-            <li>Institutional desks</li>
-            <li>Canton Coin holders</li>
           </ul>
         </div>
       </div>
-      <p style="margin-top: 2rem;"><strong>Best early adopter:</strong> A Canton app team whose users transfer value.</p>
+      <div style="margin-top: 1.5rem; padding: 1rem; background: var(--accent-light); border-radius: 0.5rem;">
+        <p style="margin: 0; color: var(--accent); font-weight: 500;"><strong>Best early adopter:</strong> A Canton app team whose users transfer value to counterparties.</p>
+      </div>
     </div>
 
-    <!-- Slide 5: Demo / What's Built -->
+    <!-- Slide 5: Demo - The Safety Flow -->
     <div class="slide" data-slide="5">
-      <h1>What's Built</h1>
-      <div class="two-col">
+      <h1>The Safety Flow</h1>
+      <h2>Every resolution state handled</h2>
+      <div class="two-col" style="gap: 2rem;">
         <div>
-          <h3>Routes</h3>
-          <div class="routes-list">
-            <code>/</code> <span>Marketing landing</span>
-            <code>/app</code> <span>Search for names</span>
-            <code>/app/register</code> <span>Registration flow</span>
-            <code>/app/names</code> <span>My registered names</span>
-            <code>/app/name/[name]</code> <span>Details + QR</span>
-            <code>/app/demo/recipient</code> <span>Integration demo</span>
+          <div class="mockup" style="margin-bottom: 1rem;">
+            <div class="mockup-label">Verified → OK</div>
+            <div class="mockup-input">🔍 bank</div>
+            <div class="mockup-result success" style="padding: 0.5rem 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <code style="font-size: 0.8rem;">bank.cns</code>
+                <span class="mockup-badge success" style="font-size: 0.6rem;">✓ Verified</span>
+              </div>
+            </div>
+            <button class="mockup-btn enabled" style="font-size: 0.7rem; padding: 0.35rem 0.75rem;">Send Transfer</button>
           </div>
-          <h3>Demo Flow</h3>
-          <div class="flow-steps">
-            <span class="flow-step">Search</span>
-            <span class="flow-arrow">→</span>
-            <span class="flow-step">Connect</span>
-            <span class="flow-arrow">→</span>
-            <span class="flow-step">Approve</span>
-            <span class="flow-arrow">→</span>
-            <span class="flow-step">Confirm</span>
-            <span class="flow-arrow">→</span>
-            <span class="flow-step">Share</span>
-            <span class="flow-arrow">→</span>
-            <span class="flow-step">Resolve</span>
+          <div class="mockup">
+            <div class="mockup-label">Unverified → Confirm</div>
+            <div class="mockup-input">🔍 alice</div>
+            <div class="mockup-result warning" style="padding: 0.5rem 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <code style="font-size: 0.8rem;">alice.unverified.cns</code>
+                <span class="mockup-badge warning" style="font-size: 0.6rem;">⚠ Unverified</span>
+              </div>
+              <div style="font-size: 0.7rem; margin-top: 0.35rem; color: #92400e;">☐ I understand this name is not identity-verified</div>
+            </div>
+            <button class="mockup-btn disabled" style="font-size: 0.7rem; padding: 0.35rem 0.75rem;">Send Transfer</button>
           </div>
         </div>
         <div>
-          <div class="mockup">
-            <div class="mockup-label">Recipient</div>
-            <div style="font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem;">Before</div>
-            <div class="mockup-before">alice::1220a3f9b8c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1c7e2</div>
-            <div style="font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem;">After</div>
-            <div class="mockup-after">
-              <code>alice.unverified.cns</code>
-              <span class="mockup-badge">✓ Resolved</span>
+          <div class="mockup" style="margin-bottom: 1rem;">
+            <div class="mockup-label">Expired → Blocked</div>
+            <div class="mockup-input">🔍 expired-name</div>
+            <div class="mockup-result danger" style="padding: 0.5rem 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <code style="font-size: 0.8rem;">expired-name.unverified.cns</code>
+                <span class="mockup-badge danger" style="font-size: 0.6rem;">✕ Expired</span>
+              </div>
+              <div class="mockup-msg danger" style="font-size: 0.7rem;">Cannot proceed — name has expired</div>
             </div>
+            <button class="mockup-btn disabled" style="font-size: 0.7rem; padding: 0.35rem 0.75rem;">Send Transfer</button>
+          </div>
+          <div class="mockup">
+            <div class="mockup-label">Not Found → Blocked</div>
+            <div class="mockup-input">🔍 nonexistent</div>
+            <div class="mockup-result danger" style="padding: 0.5rem 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; color: var(--muted);">—</span>
+                <span class="mockup-badge danger" style="font-size: 0.6rem;">✕ Not Found</span>
+              </div>
+              <div class="mockup-msg danger" style="font-size: 0.7rem;">Cannot proceed — resolution failed</div>
+            </div>
+            <button class="mockup-btn disabled" style="font-size: 0.7rem; padding: 0.35rem 0.75rem;">Send Transfer</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Slide 6: Hardest Problems -->
+    <!-- Slide 6: What's Built -->
     <div class="slide" data-slide="6">
-      <h1>Hardest Problems Solved</h1>
-      <div class="two-col" style="margin-top: 0.5rem; gap: 2rem;">
+      <h1>What's Built</h1>
+      <div class="two-col" style="gap: 2rem;">
         <div>
-          <h3 style="margin-top: 0;">Safe name-to-party resolution</h3>
-          <ul style="font-size: 1.1rem;">
-            <li>Handles nonexistent, expired, unverified, changed-between-typing-and-sending</li>
-            <li>Validates <strong>before</strong> send, not after</li>
+          <h3 style="margin-top: 0;">Resolver contract</h3>
+          <ul style="font-size: 1rem;">
+            <li>Zod schemas for all response types</li>
+            <li>Discriminated union on status</li>
+            <li>Stable SCREAMING_SNAKE reason codes</li>
+            <li>Demo and live resolvers share interface</li>
           </ul>
-          <h3>Typed adapter layer</h3>
-          <ul style="font-size: 1.1rem;">
-            <li>Zod schemas validate all API responses</li>
-            <li>Demo and live adapters share the same interface</li>
-            <li>Swap adapters without changing UI code</li>
+          <h3>CnsRecipientInput component</h3>
+          <ul style="font-size: 1rem;">
+            <li>Debounced resolution</li>
+            <li>Confirmation checkbox for unverified/changed</li>
+            <li>Blocks missing/expired automatically</li>
           </ul>
         </div>
         <div>
-          <h3 style="margin-top: 0;">Registration state machine</h3>
-          <ul style="font-size: 1.1rem;">
-            <li>Unit-tested transitions through all states</li>
-            <li>Handles rejection, timeout, and retry cleanly</li>
-          </ul>
-          <p style="margin-top: 1.5rem; padding: 1rem; background: var(--accent-light); border-radius: 0.5rem; font-size: 1rem; color: var(--accent);">
-            <strong>18 state machine tests</strong> cover all transitions
-          </p>
+          <h3 style="margin-top: 0;">Routes</h3>
+          <table style="font-size: 0.9rem;">
+            <tr><td><code>/</code></td><td>Marketing landing</td></tr>
+            <tr><td><code>/docs</code></td><td>5-minute quickstart</td></tr>
+            <tr><td><code>/app/demo/recipient</code></td><td>Integration demo</td></tr>
+            <tr><td><code>/app/register</code></td><td>Registration flow</td></tr>
+            <tr><td><code>/app/name/[name]</code></td><td>Name details</td></tr>
+          </table>
+          <div style="margin-top: 1rem; padding: 0.75rem; background: var(--accent-light); border-radius: 0.5rem;">
+            <p style="margin: 0; font-size: 0.95rem; color: var(--accent);"><strong>99 passing tests</strong> covering resolver, state machine, and fixtures</p>
+          </div>
         </div>
       </div>
     </div>
@@ -577,28 +289,30 @@
     <!-- Slide 7: Tech Stack -->
     <div class="slide" data-slide="7">
       <h1>Tech Stack</h1>
-      <div class="two-col" style="margin-top: 1rem; gap: 2rem;">
+      <div class="two-col" style="gap: 2rem;">
         <div>
-          <table style="font-size: 1rem;">
+          <table style="font-size: 0.95rem;">
             <tr><th>Layer</th><th>Choice</th></tr>
             <tr><td>Framework</td><td>Next.js 16 (App Router)</td></tr>
             <tr><td>UI</td><td>React 19</td></tr>
             <tr><td>Language</td><td>TypeScript (strict)</td></tr>
             <tr><td>Styling</td><td>Tailwind CSS 4 + shadcn/ui</td></tr>
-            <tr><td>State</td><td>TanStack Query</td></tr>
             <tr><td>Validation</td><td>Zod</td></tr>
             <tr><td>Testing</td><td>Vitest</td></tr>
-            <tr><td>Package Manager</td><td>pnpm</td></tr>
           </table>
         </div>
         <div>
           <h3 style="margin-top: 0;">Canton APIs</h3>
-          <ul style="font-size: 1.1rem;">
-            <li><strong>Scan API</strong><br><span style="color: var(--muted);">Public lookups (no auth)</span></li>
-            <li style="margin-top: 1rem;"><strong>Validator App ANS API</strong><br><span style="color: var(--muted);">Registration (JWT auth)</span></li>
+          <ul style="font-size: 1rem;">
+            <li><strong>Scan API</strong> — Public lookups (no auth)</li>
+            <li><strong>ANS API</strong> — Registration (JWT auth)</li>
           </ul>
-          <h3 style="margin-top: 1.5rem;">Also using</h3>
-          <p style="font-size: 1rem; color: var(--muted);">qrcode.react for QR codes</p>
+          <h3>Key design decisions</h3>
+          <ul style="font-size: 1rem;">
+            <li>Same contract for demo and live modes</li>
+            <li>Swap adapters without changing UI code</li>
+            <li>LocalStorage cache for change detection</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -608,99 +322,120 @@
       <h1>Validation & Proof</h1>
       <div class="two-col">
         <div>
-          <h3>What we have</h3>
+          <h3 style="margin-top: 0;">What we have</h3>
           <ul>
-            <li><strong>55 passing Vitest tests</strong> (types, state machine, fixtures)</li>
+            <li><strong>99 passing Vitest tests</strong></li>
             <li>Clean typecheck and production build</li>
             <li>Full demo-mode walkthrough</li>
-            <li>Built against CNS docs and OpenAPI specs</li>
+            <li>All resolver states testable locally</li>
           </ul>
         </div>
         <div>
-          <h3>What we don't have (yet)</h3>
+          <h3 style="margin-top: 0;">What we don't have (yet)</h3>
           <ul>
             <li><strong>Real users</strong> — zero so far</li>
             <li><strong>Live registration</strong> — untested on DevNet/TestNet</li>
-            <li><strong>Wallet connection</strong> — simulated, dApp SDK planned</li>
+            <li><strong>App integrations</strong> — none yet</li>
           </ul>
         </div>
       </div>
-      <div class="warning" style="margin-top: 2rem;">
-        <p>This is a working demo, not a production system. Tests prove the logic; live testing proves it works on the network.</p>
+      <div class="warning" style="margin-top: 1.5rem;">
+        <p>This is a working demo, not a production system. Tests prove the logic; we need a pilot integration to prove it works in a real transfer flow.</p>
       </div>
     </div>
 
     <!-- Slide 9: Go-to-Market -->
     <div class="slide" data-slide="9">
       <h1>Go-to-Market</h1>
-      <p class="big-text">Developer-first via the resolver component.</p>
-      <div class="two-col" style="margin-top: 1.5rem;">
+      <h2>Developer-first via the resolver component</h2>
+      <div class="two-col" style="gap: 2rem;">
         <div>
-          <h3>First 10 users (target)</h3>
-          <ul>
-            <li>Hand-held integrations with 2–3 Canton wallet/app teams</li>
-            <li>Direct outreach via community spaces, ecosystem calls, DMs</li>
-          </ul>
+          <h3 style="margin-top: 0;">Primary metric: lookups served</h3>
+          <p style="font-size: 1rem;">Every time a user types a name and hits resolve, that's the product working.</p>
+          <h3>Secondary metric: apps integrated</h3>
+          <p style="font-size: 1rem;">Number of Canton apps using CnsRecipientInput in their send flow.</p>
         </div>
         <div>
-          <h3>First 100 users (target)</h3>
-          <ul>
-            <li>3–5 integrated apps, each bringing 20–30 registrants</li>
-            <li>Open-source component, technical post, case study</li>
+          <h3 style="margin-top: 0;">First 10 users</h3>
+          <ul style="font-size: 1rem;">
+            <li>Hand-held integration with 1–2 Canton app teams</li>
+            <li>Direct outreach via ecosystem calls, DMs</li>
           </ul>
+          <h3>Growth lever</h3>
+          <p style="font-size: 1rem;">The embedded resolver — every integrated app shows names and prompts unnamed recipients to claim one.</p>
         </div>
       </div>
-      <h3 style="margin-top: 2rem;">Growth lever</h3>
-      <p>The embedded resolver — every integrated app shows names and prompts unnamed recipients to claim one.</p>
     </div>
 
     <!-- Slide 10: Metrics -->
     <div class="slide" data-slide="10">
       <h1>Pilot Metrics (Planned)</h1>
-      <div class="two-col" style="margin-top: 0.5rem; gap: 2rem;">
+      <div class="two-col" style="gap: 2rem;">
         <div>
-          <table style="font-size: 0.95rem;">
+          <table style="font-size: 0.9rem;">
             <tr><th>Metric</th><th>Purpose</th></tr>
-            <tr><td>Registration completion rate</td><td>Funnel health</td></tr>
-            <tr><td>Time to register</td><td>UX friction</td></tr>
-            <tr><td>Failure points by step</td><td>Drop-off analysis</td></tr>
             <tr><td>Resolver lookups</td><td>Component adoption</td></tr>
+            <tr><td>Confirmation rate</td><td>Safety friction vs. trust</td></tr>
+            <tr><td>Blocked send attempts</td><td>Errors prevented</td></tr>
+            <tr><td>Integration time</td><td>Developer experience</td></tr>
           </table>
         </div>
         <div>
-          <table style="font-size: 0.95rem;">
+          <table style="font-size: 0.9rem;">
             <tr><th>Metric</th><th>Purpose</th></tr>
-            <tr><td>Recipient error reduction</td><td>Safety impact</td></tr>
+            <tr><td>Registration completion</td><td>Funnel health</td></tr>
+            <tr><td>Time to register</td><td>UX friction</td></tr>
             <tr><td>Renewal rate</td><td>Retention signal</td></tr>
-            <tr><td>Integration time</td><td>Developer experience</td></tr>
           </table>
-          <p style="margin-top: 1rem; font-style: italic; font-size: 1rem; color: var(--muted);">No data yet — we need integrations to collect it.</p>
+          <p style="margin-top: 1rem; font-style: italic; font-size: 0.95rem; color: var(--muted);">No data yet — we need a pilot integration to collect it.</p>
         </div>
       </div>
     </div>
 
-    <!-- Slide 11: Roadmap -->
+    <!-- Slide 11: Business Model -->
     <div class="slide" data-slide="11">
+      <h1>How Canton Names Makes Money</h1>
+      <h2>Revenue model (planned)</h2>
+      <div class="two-col" style="gap: 2rem;">
+        <div>
+          <h3 style="margin-top: 0;">1. Verified names for institutions</h3>
+          <p style="font-size: 1rem;">Organizations pay for identity-verified names (e.g. <code>bank.cns</code>). Fits Canton's regulated user base.</p>
+          <h3>2. Paid resolver for app teams</h3>
+          <p style="font-size: 1rem;">Free component; paid tiers add lookup limits, uptime SLAs, and support.</p>
+          <h3>3. Name registration fees</h3>
+          <p style="font-size: 1rem;">Annual renewal. Premium pricing for short names.</p>
+        </div>
+        <div>
+          <h3 style="margin-top: 0;">4. Canton network app rewards</h3>
+          <p style="font-size: 1rem;">Registrations and lookups generate on-chain activity that may earn app rewards.</p>
+          <h3>5. Ecosystem grants</h3>
+          <p style="font-size: 1rem;">Canton Foundation / AppsFactory funding to bridge to paid tiers.</p>
+        </div>
+      </div>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--muted); font-style: italic;">Revenue model is a plan; nothing is live yet.</p>
+    </div>
+
+    <!-- Slide 12: Roadmap -->
+    <div class="slide" data-slide="12">
       <h1>What's Not Built Yet</h1>
       <div class="two-col">
         <div>
-          <h3>Immediate (for pilot)</h3>
-          <ul>
+          <h3 style="margin-top: 0;">Immediate (for pilot)</h3>
+          <ul style="font-size: 1rem;">
             <li>Real wallet via Canton dApp SDK</li>
             <li>Live DevNet/TestNet registration</li>
             <li>Session management</li>
           </ul>
           <h3>Near-term</h3>
-          <ul>
+          <ul style="font-size: 1rem;">
             <li>Playwright E2E tests</li>
             <li>Public deployment</li>
-            <li>Demo video</li>
-            <li>Renewal reminders</li>
+            <li>npm package for resolver</li>
           </ul>
         </div>
         <div>
-          <h3>Future</h3>
-          <ul>
+          <h3 style="margin-top: 0;">Future</h3>
+          <ul style="font-size: 1rem;">
             <li>Name transfers</li>
             <li>Verified names (KYC/KYB)</li>
             <li>Subdomain support</li>
@@ -710,40 +445,14 @@
       </div>
     </div>
 
-    <!-- Slide 12: Business Model -->
-    <div class="slide" data-slide="12">
-      <h1>How Canton Names Makes Money</h1>
-      <h2>Revenue model (planned)</h2>
-      <div class="two-col" style="margin-top: 0.5rem; gap: 2rem;">
-        <div>
-          <h3 style="margin-top: 0;">1. Verified names for institutions</h3>
-          <p style="font-size: 1.1rem;">Organizations pay for identity-verified names (e.g. <code>bank.cns</code>) instead of <code>.unverified.cns</code>. Fits Canton's regulated, institutional user base.</p>
-          
-          <h3>2. Paid resolver for app teams</h3>
-          <p style="font-size: 1.1rem;">The drop-in <code>CnsRecipientInput</code> stays free. Paid tiers add higher lookup limits, uptime SLAs, and support for wallets, exchanges, and custodians.</p>
-          
-          <h3>3. Name registration fees</h3>
-          <p style="font-size: 1.1rem;">Annual renewal per name. Premium pricing for short names.</p>
-        </div>
-        <div>
-          <h3 style="margin-top: 0;">4. Canton network app rewards</h3>
-          <p style="font-size: 1.1rem;">Registrations and lookups generate on-chain activity that may earn app rewards (subject to current Canton reward rules).</p>
-          
-          <h3>5. Ecosystem grants</h3>
-          <p style="font-size: 1.1rem;">Canton Foundation / AppsFactory funding to bridge to paid tiers.</p>
-        </div>
-      </div>
-      <p style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--muted); font-style: italic;">Revenue model is a plan; nothing is live yet.</p>
-    </div>
-
     <!-- Slide 13: The Ask -->
     <div class="slide title-slide" data-slide="13">
       <h1>The Ask</h1>
       <div style="text-align: left; max-width: 40rem;">
-        <p style="font-size: 1.5rem; margin-bottom: 1.5rem;"><strong>1. DevNet or TestNet access</strong><br>Credentials to register names with real Canton Coin fees</p>
-        <p style="font-size: 1.5rem;"><strong>2. One Canton wallet or app team willing to pilot</strong><br>Embed <code>CnsRecipientInput</code>, provide feedback</p>
+        <p style="font-size: 1.4rem; margin-bottom: 1.25rem;"><strong>1. DevNet or TestNet access</strong><br>Credentials to register names with real Canton Coin fees</p>
+        <p style="font-size: 1.4rem;"><strong>2. One Canton app team willing to pilot</strong><br>Embed <code>CnsRecipientInput</code> in a real send flow, provide feedback</p>
       </div>
-      <p style="margin-top: 3rem; font-size: 1.25rem; color: var(--accent);">That's what it takes to move Canton Names from demo mode to real transfers.</p>
+      <p style="margin-top: 2.5rem; font-size: 1.2rem; color: var(--accent);">That's what it takes to prove safe recipient resolution works in production.</p>
     </div>
 
   </div>
@@ -753,65 +462,40 @@
     <button onclick="nextSlide()" title="Next (→)">→</button>
   </div>
 
-  <div class="slide-number">
-    <span id="current">1</span> / <span id="total">13</span>
-  </div>
-
+  <div class="slide-number"><span id="current">1</span> / <span id="total">13</span></div>
   <div class="progress" id="progress"></div>
 
   <script>
     const slides = document.querySelectorAll('.slide');
     const total = slides.length;
     let current = 1;
-
     document.getElementById('total').textContent = total;
 
     function showSlide(n) {
       if (n < 1) n = 1;
       if (n > total) n = total;
       current = n;
-      
       slides.forEach(s => s.classList.remove('active'));
-      document.querySelector(`[data-slide="${n}"]`).classList.add('active');
+      document.querySelector('[data-slide="' + n + '"]').classList.add('active');
       document.getElementById('current').textContent = n;
       document.getElementById('progress').style.width = ((n / total) * 100) + '%';
     }
 
-    function nextSlide() {
-      showSlide(current + 1);
-    }
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
 
-    function prevSlide() {
-      showSlide(current - 1);
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-        e.preventDefault();
-        nextSlide();
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        prevSlide();
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        showSlide(1);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        showSlide(total);
-      }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+      else if (e.key === 'Home') { e.preventDefault(); showSlide(1); }
+      else if (e.key === 'End') { e.preventDefault(); showSlide(total); }
     });
 
-    // Touch support
-    let touchStartX = 0;
-    document.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-    document.addEventListener('touchend', (e) => {
-      const diff = e.changedTouches[0].screenX - touchStartX;
-      if (Math.abs(diff) > 50) {
-        if (diff < 0) nextSlide();
-        else prevSlide();
-      }
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+    document.addEventListener('touchend', function(e) {
+      var diff = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(diff) > 50) { if (diff < 0) nextSlide(); else prevSlide(); }
     });
   </script>
 </body>
