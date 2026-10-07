@@ -41,6 +41,12 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                 Quickstart
               </Link>
               <Link
+                href="/pitch"
+                className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              >
+                Overview
+              </Link>
+              <Link
                 href="/docs"
                 className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
               >
@@ -91,6 +97,13 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                 Quickstart
               </Link>
               <Link
+                href="/pitch"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Overview
+              </Link>
+              <Link
                 href="/docs"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-sm font-medium text-gray-600 hover:text-gray-900"
@@ -133,6 +146,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             </div>
             
             <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+              <Link href="/pitch" className="text-gray-600 hover:text-gray-900">
+                Overview
+              </Link>
               <Link href="/docs" className="text-gray-600 hover:text-gray-900">
                 Docs
               </Link>
