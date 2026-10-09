@@ -1,27 +1,25 @@
 import { z } from 'zod';
+import { CNS_NETWORK_PRESETS, resolveNetworkId, type CnsNetworkId } from './network-presets';
 
-const envSchema = z.object({
+const publicEnvSchema = z.object({
   NEXT_PUBLIC_CNS_MODE: z.enum(['live', 'demo']).default('demo'),
-  NEXT_PUBLIC_SCAN_API_URL: z.string().url().optional(),
-  NEXT_PUBLIC_VALIDATOR_API_URL: z.string().url().optional(),
-  NEXT_PUBLIC_NETWORK_NAME: z.string().default('DevNet'),
+  NEXT_PUBLIC_CNS_NETWORK: z.string().optional(),
+  NEXT_PUBLIC_CNS_RESOLVE_URL: z.string().default('/api/cns/resolve'),
 });
 
 function getEnvConfig() {
-  const parsed = envSchema.safeParse({
+  const parsed = publicEnvSchema.safeParse({
     NEXT_PUBLIC_CNS_MODE: process.env.NEXT_PUBLIC_CNS_MODE,
-    NEXT_PUBLIC_SCAN_API_URL: process.env.NEXT_PUBLIC_SCAN_API_URL,
-    NEXT_PUBLIC_VALIDATOR_API_URL: process.env.NEXT_PUBLIC_VALIDATOR_API_URL,
-    NEXT_PUBLIC_NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME,
+    NEXT_PUBLIC_CNS_NETWORK: process.env.NEXT_PUBLIC_CNS_NETWORK,
+    NEXT_PUBLIC_CNS_RESOLVE_URL: process.env.NEXT_PUBLIC_CNS_RESOLVE_URL,
   });
 
   if (!parsed.success) {
     console.warn('Invalid environment configuration, using defaults:', parsed.error.issues);
     return {
       NEXT_PUBLIC_CNS_MODE: 'demo' as const,
-      NEXT_PUBLIC_SCAN_API_URL: undefined,
-      NEXT_PUBLIC_VALIDATOR_API_URL: undefined,
-      NEXT_PUBLIC_NETWORK_NAME: 'DevNet',
+      NEXT_PUBLIC_CNS_NETWORK: 'demo',
+      NEXT_PUBLIC_CNS_RESOLVE_URL: '/api/cns/resolve',
     };
   }
 
@@ -29,13 +27,25 @@ function getEnvConfig() {
 }
 
 const env = getEnvConfig();
+const networkId: CnsNetworkId = resolveNetworkId(env.NEXT_PUBLIC_CNS_NETWORK);
+
+function networkDisplayName(): string {
+  if (networkId === 'demo' || env.NEXT_PUBLIC_CNS_MODE === 'demo') {
+    return 'Demo';
+  }
+  return CNS_NETWORK_PRESETS[networkId]?.displayName ?? networkId;
+}
 
 export const cnsConfig = {
   mode: env.NEXT_PUBLIC_CNS_MODE,
-  scanApiUrl: env.NEXT_PUBLIC_SCAN_API_URL ?? 'https://scan.sv-1.global.canton.network.sync.global/api/scan',
-  validatorApiUrl: env.NEXT_PUBLIC_VALIDATOR_API_URL ?? '',
-  network: env.NEXT_PUBLIC_NETWORK_NAME,
+  networkId,
+  httpResolveUrl: env.NEXT_PUBLIC_CNS_RESOLVE_URL,
+  network: networkDisplayName(),
   isDemo: env.NEXT_PUBLIC_CNS_MODE === 'demo',
+  registrationUiUrl:
+    networkId !== 'demo' && networkId !== 'mainnet'
+      ? CNS_NETWORK_PRESETS[networkId]?.registrationUiUrl
+      : undefined,
 } as const;
 
 export function isDemoMode(): boolean {

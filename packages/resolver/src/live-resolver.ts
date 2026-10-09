@@ -1,148 +1,75 @@
-import type { Resolver, ResolveOptions, ResolveResult, ResolveInput, MissingResult } from './resolve-contract';
+import type { Resolver, ResolveOptions, ResolveResult } from './resolve-contract';
 import {
   parseInput,
   validateCnsName,
   validatePartyId,
   createMissingResult,
-  createExpiredResult,
-  createUnverifiedResult,
-  createChangedResult,
-  createOkResult,
-  getCachedLastKnown,
-  setCachedLastKnown,
-  CNS_SUFFIX_UNVERIFIED,
 } from './resolve-contract';
-import { LookupEntryByNameResponseSchema } from './scan-types';
+import { ScanAnsClient, type ScanAnsClientOptions } from './scan-ans-client';
+import { alternateVerifiedName, mapNameLookupToResult, mapPartyLookupToResult } from './map-live-entry';
+import { configureAnsAcronym } from './ans-suffix';
+
+export type LiveResolverOptions = ScanAnsClientOptions & {
+  ansAcronym?: string;
+};
 
 export class LiveResolver implements Resolver {
-  private baseUrl: string;
+  private client: ScanAnsClient;
+  private ansAcronym?: string;
 
-  constructor(scanApiUrl: string) {
-    this.baseUrl = scanApiUrl;
+  /** @param scanApiUrl Legacy: Scan API base URL with `scan` style and no auth */
+  constructor(scanApiUrlOrOptions: string | LiveResolverOptions) {
+    if (typeof scanApiUrlOrOptions === 'string') {
+      this.client = new ScanAnsClient({
+        baseUrl: scanApiUrlOrOptions,
+        style: 'scan',
+      });
+    } else {
+      const { ansAcronym, ...clientOpts } = scanApiUrlOrOptions;
+      this.ansAcronym = ansAcronym;
+      if (ansAcronym) {
+        configureAnsAcronym(ansAcronym);
+      }
+      this.client = new ScanAnsClient(clientOpts);
+    }
   }
 
   async resolve(inputStr: string, opts?: ResolveOptions): Promise<ResolveResult> {
+    if (this.ansAcronym) {
+      configureAnsAcronym(this.ansAcronym);
+    }
+
     const input = parseInput(inputStr);
-    const source = 'live' as const;
 
     if (input.kind === 'partyId') {
       const validation = validatePartyId(input.raw);
       if (!validation.valid) {
-        return createMissingResult(input, 'INVALID_INPUT', source);
+        return createMissingResult(input, 'INVALID_INPUT', 'live');
       }
 
-      try {
-        const response = await fetch(
-          `${this.baseUrl}/v0/ans-entries/by-party/${encodeURIComponent(input.normalized)}`,
-          { signal: opts?.signal }
-        );
-
-        if (response.status === 404) {
-          return createMissingResult(input, 'PARTY_NOT_FOUND', source);
-        }
-
-        if (!response.ok) {
-          return this.createUnavailableResult(input);
-        }
-
-        const data = await response.json();
-        const entry = data.entry;
-        if (!entry) {
-          return createMissingResult(input, 'PARTY_NOT_FOUND', source);
-        }
-
-        const name = entry.name;
-        const partyId = entry.user;
-        const expiresAt = entry.expires_at ?? null;
-        const verified = !name.endsWith(CNS_SUFFIX_UNVERIFIED);
-
-        if (expiresAt && new Date(expiresAt) < new Date()) {
-          return createExpiredResult(input, name, verified, expiresAt, source);
-        }
-
-        if (verified) {
-          return createOkResult(input, partyId, name, true, expiresAt, source);
-        }
-
-        return createUnverifiedResult(input, partyId, name, expiresAt, source);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
-          throw error;
-        }
-        return this.createUnavailableResult(input);
-      }
+      const lookup = await this.client.lookupByParty(input.normalized, opts?.signal);
+      return mapPartyLookupToResult(input, lookup);
     }
 
     const validation = validateCnsName(input.raw);
     if (!validation.valid) {
-      return createMissingResult(input, 'INVALID_INPUT', source, input.normalized);
+      return createMissingResult(input, 'INVALID_INPUT', 'live', input.normalized);
     }
 
-    try {
-      const response = await fetch(
-        `${this.baseUrl}/v0/ans-entries/by-name/${encodeURIComponent(input.normalized)}`,
-        { signal: opts?.signal }
-      );
+    let lookup = await this.client.lookupByName(input.normalized, opts?.signal);
 
-      if (response.status === 404) {
-        return createMissingResult(input, 'NAME_NOT_FOUND', source, input.normalized);
+    if (lookup === 'not_found') {
+      const alt = alternateVerifiedName(input.normalized);
+      if (alt) {
+        lookup = await this.client.lookupByName(alt, opts?.signal);
       }
-
-      if (!response.ok) {
-        return this.createUnavailableResult(input);
-      }
-
-      const data = await response.json();
-      const parsed = LookupEntryByNameResponseSchema.safeParse(data);
-      if (!parsed.success) {
-        return this.createUnavailableResult(input);
-      }
-
-      const entry = parsed.data.entry;
-      const partyId = entry.user;
-      const expiresAt = entry.expires_at ?? null;
-      const verified = !entry.name.endsWith(CNS_SUFFIX_UNVERIFIED);
-
-      if (expiresAt && new Date(expiresAt) < new Date()) {
-        return createExpiredResult(input, entry.name, verified, expiresAt, source);
-      }
-
-      const lastKnown = opts?.lastKnown ?? getCachedLastKnown(input.normalized);
-      const knownPartyId = opts?.knownPartyId ?? lastKnown?.partyId;
-
-      if (knownPartyId && knownPartyId !== partyId) {
-        return createChangedResult(
-          input,
-          partyId,
-          knownPartyId,
-          entry.name,
-          verified,
-          expiresAt,
-          source
-        );
-      }
-
-      setCachedLastKnown(input.normalized, partyId);
-
-      if (verified) {
-        return createOkResult(input, partyId, entry.name, true, expiresAt, source);
-      }
-
-      return createUnverifiedResult(input, partyId, entry.name, expiresAt, source);
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        throw error;
-      }
-      return this.createUnavailableResult(input);
     }
+
+    return mapNameLookupToResult(input, lookup, opts);
   }
 
-  private createUnavailableResult(input: ResolveInput): MissingResult {
-    return createMissingResult(
-      input,
-      'RESOLVER_UNAVAILABLE',
-      'live',
-      input.kind === 'name' ? input.normalized : undefined
-    );
+  /** Expose low-level ANS reads for app adapters (search, availability). */
+  getScanClient(): ScanAnsClient {
+    return this.client;
   }
 }

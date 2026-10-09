@@ -71,12 +71,34 @@ const result = await resolve('bank');
 
 ## Live mode
 
+Do **not** call Scan from the browser (IP allowlists block Vercel and end users). Proxy through your backend:
+
 ```ts
+// Browser / client bundle
 configureResolver({
   mode: 'live',
-  scanApiUrl: 'https://scan.sv-1.global.canton.network.sync.global/api/scan',
+  liveTransport: 'http-endpoint',
+  httpResolveUrl: '/api/cns/resolve',
 });
 ```
+
+Server route (Next.js example) using `@canton-names/resolver/server`:
+
+```ts
+import { createResolveHandler } from '@canton-names/resolver/server';
+
+export const GET = createResolveHandler({
+  baseUrl: process.env.CNS_UPSTREAM_URL!,
+  style: 'scan', // or 'scan-proxy' on your validator
+  ansAcronym: 'cns', // LocalNet uses 'ans'
+  getAuthHeaders: () =>
+    process.env.CNS_UPSTREAM_TOKEN
+      ? { Authorization: `Bearer ${process.env.CNS_UPSTREAM_TOKEN}` }
+      : {},
+});
+```
+
+On live networks, almost all user names are `.unverified.<acronym>` → `unverified` (confirm before send). `ok` is reserved for DSO/SV-style entries or when `knownPartyId` matches (trusted address book).
 
 ## Exports
 

@@ -12,3 +12,13 @@ export const AnsEntrySchema = z.object({
 export const LookupEntryByNameResponseSchema = z.object({
   entry: AnsEntrySchema,
 });
+
+export const LookupEntryByPartyResponseSchema = z.object({
+  entry: AnsEntrySchema,
+});
+
+export const ListEntriesResponseSchema = z.object({
+  entries: z.array(AnsEntrySchema),
+});
+
+export type AnsEntry = z.infer<typeof AnsEntrySchema>;

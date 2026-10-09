@@ -1,5 +1,5 @@
 import type { AnsEntry, NameAvailability, CreateAnsEntryRequest, CreateAnsEntryResponse, UserAnsEntry, ResolvedName } from './types';
-import { validateName, isExpired, ListEntriesResponseSchema, LookupEntryByNameResponseSchema } from './types';
+import { validateName, isExpired, LookupEntryByNameResponseSchema, ListEntriesResponseSchema } from './types';
 import { cnsConfig, isDemoMode } from './config';
 import { 
   getDemoEntry, 
@@ -25,6 +25,8 @@ export interface CnsRegistrationAdapter {
   getUserEntries(): Promise<UserAnsEntry[]>;
   getRegistrationConfig(): Promise<{ fee: string; unit: string; lifetimeDays: number }>;
 }
+
+const ENTRIES_API = '/api/cns/entries';
 
 class DemoReadAdapter implements CnsReadAdapter {
   private delay(ms: number = 300): Promise<void> {
@@ -117,65 +119,48 @@ class DemoRegistrationAdapter implements CnsRegistrationAdapter {
 }
 
 class LiveReadAdapter implements CnsReadAdapter {
-  private baseUrl: string;
-
-  constructor(scanApiUrl: string) {
-    this.baseUrl = scanApiUrl;
+  private async fetchEntries(path: string): Promise<Response> {
+    const response = await fetch(path, { headers: { Accept: 'application/json' } });
+    return response;
   }
 
   async lookupByName(name: string): Promise<AnsEntry | null> {
-    try {
-      const response = await fetch(`${this.baseUrl}/v0/ans-entries/by-name/${encodeURIComponent(name)}`);
-      if (response.status === 404) return null;
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      const data = await response.json();
-      const parsed = LookupEntryByNameResponseSchema.safeParse(data);
-      if (!parsed.success) {
-        console.error('Invalid response format:', parsed.error);
-        throw new Error('Invalid response format from Scan API');
-      }
-      return parsed.data.entry;
-    } catch (error) {
-      console.error('Lookup by name failed:', error);
-      throw error;
+    const response = await this.fetchEntries(`${ENTRIES_API}?name=${encodeURIComponent(name)}`);
+    if (response.status === 503) {
+      throw new Error('Live CNS backend not configured');
     }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.entry) return null;
+    const parsed = LookupEntryByNameResponseSchema.safeParse({ entry: data.entry });
+    if (!parsed.success) throw new Error('Invalid response format');
+    return parsed.data.entry;
   }
 
   async lookupByParty(partyId: string): Promise<AnsEntry | null> {
-    try {
-      const response = await fetch(`${this.baseUrl}/v0/ans-entries/by-party/${encodeURIComponent(partyId)}`);
-      if (response.status === 404) return null;
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      const data = await response.json();
-      return data.entry;
-    } catch (error) {
-      console.error('Lookup by party failed:', error);
-      throw error;
+    const response = await this.fetchEntries(`${ENTRIES_API}?party=${encodeURIComponent(partyId)}`);
+    if (response.status === 503) {
+      throw new Error('Live CNS backend not configured');
     }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    return data.entry ?? null;
   }
 
   async searchByPrefix(prefix: string, limit: number = 10): Promise<AnsEntry[]> {
-    try {
-      const params = new URLSearchParams({
-        name_prefix: prefix,
-        page_size: String(limit),
-      });
-      const response = await fetch(`${this.baseUrl}/v0/ans-entries?${params}`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      const data = await response.json();
-      const parsed = ListEntriesResponseSchema.safeParse(data);
-      if (!parsed.success) {
-        console.error('Invalid response format:', parsed.error);
-        throw new Error('Invalid response format from Scan API');
-      }
-      return parsed.data.entries;
-    } catch (error) {
-      console.error('Search failed:', error);
-      throw error;
+    const params = new URLSearchParams({
+      prefix,
+      limit: String(limit),
+    });
+    const response = await this.fetchEntries(`${ENTRIES_API}?${params}`);
+    if (response.status === 503) {
+      throw new Error('Live CNS backend not configured');
     }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const parsed = ListEntriesResponseSchema.safeParse(data);
+    if (!parsed.success) throw new Error('Invalid response format');
+    return parsed.data.entries;
   }
 
   async checkAvailability(input: string): Promise<NameAvailability> {
@@ -208,23 +193,16 @@ class LiveReadAdapter implements CnsReadAdapter {
 }
 
 class LiveRegistrationAdapter implements CnsRegistrationAdapter {
-  private baseUrl: string;
-
-  constructor(validatorApiUrl: string) {
-    this.baseUrl = validatorApiUrl;
-  }
-
   async requestRegistration(_request: CreateAnsEntryRequest): Promise<CreateAnsEntryResponse> {
-    throw new Error(
-      'Live registration requires wallet authentication. ' +
-      'Configure NEXT_PUBLIC_VALIDATOR_API_URL and implement wallet connection.'
-    );
+    const hint = cnsConfig.registrationUiUrl
+      ? `Register in your wallet: ${cnsConfig.registrationUiUrl}`
+      : 'Live registration requires wallet authentication on your validator.';
+    throw new Error(hint);
   }
 
   async getUserEntries(): Promise<UserAnsEntry[]> {
     throw new Error(
-      'Listing user entries requires authentication. ' +
-      'Configure NEXT_PUBLIC_VALIDATOR_API_URL and implement wallet connection.'
+      'Listing user entries requires authentication. Connect your wallet on your validator.'
     );
   }
 
@@ -244,7 +222,7 @@ export function getReadAdapter(): CnsReadAdapter {
   if (!readAdapter) {
     readAdapter = isDemoMode() 
       ? new DemoReadAdapter()
-      : new LiveReadAdapter(cnsConfig.scanApiUrl);
+      : new LiveReadAdapter();
   }
   return readAdapter;
 }
@@ -253,7 +231,7 @@ export function getRegistrationAdapter(): CnsRegistrationAdapter {
   if (!registrationAdapter) {
     registrationAdapter = isDemoMode()
       ? new DemoRegistrationAdapter()
-      : new LiveRegistrationAdapter(cnsConfig.validatorApiUrl);
+      : new LiveRegistrationAdapter();
   }
   return registrationAdapter;
 }
