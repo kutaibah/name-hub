@@ -561,17 +561,44 @@
           <p>Drop-in resolver demo</p>
         </div>
         <div class="proof-item">
-          <h3>Demo Mode</h3>
-          <p>Runs locally, fully functional</p>
+          <h3>Live resolve path</h3>
+          <p>Server route + network presets (Phase 0)</p>
         </div>
       </div>
       <div class="highlight-box" style="margin-top: 1rem;">
-        <p style="font-size: 1.35rem;"><strong>55 passing tests. Clean build.</strong></p>
+        <p style="font-size: 1.35rem;"><strong>115+ passing tests. Clean build.</strong> Demo mode ships on Vercel today.</p>
       </div>
     </div>
 
-    <!-- Slide 6: Demo -->
+    <!-- Slide 6: DevNet access & Phase 0 -->
     <div class="slide" data-slide="6">
+      <h1>Real network access</h1>
+      <div class="two-col" style="gap: 2rem;">
+        <div>
+          <h3 style="margin-top: 0;">The challenge</h3>
+          <ul style="font-size: 1.15rem;">
+            <li>DevNet needs a <strong>validator</strong> sponsored by a Super Validator, with a <strong>fixed egress IP</strong> they allowlist</li>
+            <li><strong>Scan is IP-allowlisted</strong> too — we got <code>403</code> from DevNet Scan</li>
+            <li>Canton docs: allowlisting usually <strong>2–7 days</strong>; developer FAQ says up to <strong>2–4 weeks</strong></li>
+            <li>With <strong>~2 days left</strong> in the hackathon, we can’t count on DevNet in time</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="margin-top: 0;">What we built instead (Phase 0)</h3>
+          <ul style="font-size: 1.15rem;">
+            <li>Server-side <code>/api/cns/resolve</code> — browser never hits Scan directly</li>
+            <li>Presets: demo / localnet / devnet / mainnet + one live resolver → safe statuses</li>
+            <li>LocalNet runbook; <strong>DevNet = config change</strong> (upstream URL + token), not a rewrite</li>
+          </ul>
+          <div class="warning-box" style="margin-top: 0.75rem;">
+            <p style="font-size: 1rem;"><strong>Verified so far:</strong> tests with fixtures matching real Splice API shapes. <strong>LocalNet end-to-end not yet run</strong> on our side.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Demo -->
+    <div class="slide" data-slide="7">
       <h1>Demo</h1>
       <div class="demo-flow">
         <span class="demo-step">Claim</span>
@@ -585,8 +612,8 @@
       </p>
     </div>
 
-    <!-- Slide 7: Business Model -->
-    <div class="slide" data-slide="7">
+    <!-- Slide 8: Business Model -->
+    <div class="slide" data-slide="8">
       <h1>How We Make Money</h1>
       <h2>Revenue model (planned)</h2>
       <div class="two-col" style="gap: 2.5rem;">
@@ -608,21 +635,21 @@
       <p style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--muted); font-style: italic;">Revenue model is a plan; nothing is live yet.</p>
     </div>
 
-    <!-- Slide 8: Ask -->
-    <div class="slide" data-slide="8">
+    <!-- Slide 9: Ask -->
+    <div class="slide" data-slide="9">
       <h1>The Ask</h1>
       <ul class="ask-list">
         <li>
           <span class="ask-number">1</span>
-          <span><strong>DevNet or TestNet access</strong></span>
+          <span><strong>DevNet sponsorship</strong> — validator access or an allowlisted node so we can flip the preset and go live</span>
         </li>
         <li>
           <span class="ask-number">2</span>
-          <span><strong>One Canton app team willing to pilot</strong></span>
+          <span><strong>One Canton app team willing to pilot</strong> the resolver in a real transfer flow</span>
         </li>
       </ul>
       <div class="highlight-box" style="margin-top: 2rem;">
-        <p style="font-size: 1.35rem;">Prove readable names work in real transfers.</p>
+        <p style="font-size: 1.35rem;">We have the resolve path; we need network access and a pilot to prove it in production.</p>
       </div>
     </div>
 
@@ -634,7 +661,7 @@
   </div>
 
   <div class="slide-number">
-    <span id="current">1</span> / <span id="total">8</span>
+    <span id="current">1</span> / <span id="total">9</span>
   </div>
 
   <div class="progress" id="progress"></div>

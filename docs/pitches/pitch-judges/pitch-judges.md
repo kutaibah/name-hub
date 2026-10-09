@@ -51,12 +51,25 @@ It's built for Canton app teams making wallets, payments, settlement, and transf
 **Working prototype:**
 - Search, registration, public name pages, QR sharing
 - Recipient component demo
-- Runs locally in demo mode
+- Server resolve path + network presets (Phase 0)
 
-**55 passing tests. Clean build.**
+**115+ passing tests. Clean build.** Demo mode ships on Vercel today.
 
 **Speaker notes:**
-We already have a working prototype: search, registration, public name pages, QR sharing, and a recipient demo. It runs locally in demo mode, with 55 passing tests and a clean build.
+We have search, registration, public pages, QR sharing, and the recipient demo. Phase 0 adds a server-side resolve path and network presets. Demo mode still ships on Vercel; tests and build are green.
+
+---
+
+# Real network access
+
+**The challenge:** DevNet needs a validator sponsored by an SV, with a fixed egress IP they allowlist. Scan is IP-allowlisted too (we saw 403). Docs say 2–7 days; FAQ says up to 2–4 weeks. With ~2 days left in the hackathon, we can’t count on DevNet in time.
+
+**Phase 0 instead:** `/api/cns/resolve`, presets (demo/localnet/devnet/mainnet), one live resolver mapping to safe statuses, LocalNet runbook. DevNet later is a config change (upstream URL + token).
+
+**Honest verification:** fixture tests match real Splice API shapes; LocalNet E2E not yet run on our side.
+
+**Speaker notes:**
+Be direct about access friction and timeline. Phase 0 is the architecture bet; don’t overclaim live DevNet.
 
 ---
 
@@ -73,10 +86,10 @@ In the demo, we claim a name, share it, and then resolve it inside a mock transf
 
 # The Ask
 
-1. **DevNet or TestNet access**
-2. **One Canton app team willing to pilot**
+1. **DevNet sponsorship** — validator access or an allowlisted node so we can flip the preset and go live
+2. **One Canton app team willing to pilot** the resolver in a real transfer flow
 
-Prove readable names work in real transfers.
+We have the resolve path; we need network access and a pilot to prove it in production.
 
 **Speaker notes:**
 We want DevNet or TestNet access and one Canton app team willing to pilot this live so we can prove readable names work in real transfers.
