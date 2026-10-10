@@ -16,6 +16,16 @@ export const DEVNET_DSO_ENTRY = {
   description: 'DSO entry',
 };
 
+/** LocalNet Scan returns explicit null contract_id for DSO/SV-style entries (Splice 0.9.1). */
+export const LOCALNET_DSO_ANS_ENTRY = {
+  contract_id: null,
+  user: 'DSO::1220000000000000000000000000000000000000000000000000000000000000',
+  name: 'dso.ans',
+  url: '',
+  description: 'DSO entry',
+  expires_at: null,
+};
+
 export const EXPIRED_ENTRY = {
   ...LOCALNET_UNVERIFIED_ENTRY,
   name: 'expired.unverified.ans',

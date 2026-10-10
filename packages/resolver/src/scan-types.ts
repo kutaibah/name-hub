@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const AnsEntrySchema = z.object({
-  contract_id: z.string().optional(),
+  contract_id: z.string().optional().nullable(),
   user: z.string(),
   name: z.string(),
   url: z.string(),
