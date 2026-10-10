@@ -37,13 +37,13 @@ export function nameEndsWithUnverifiedSuffix(name: string): boolean {
 
 export function isDsoOrSvStyleEntry(entry: {
   name: string;
-  contract_id?: string;
+  contract_id?: string | null;
   expires_at?: string | null;
 }): boolean {
   if (!nameEndsWithUnverifiedSuffix(entry.name)) {
     return true;
   }
-  const noContract = entry.contract_id === undefined || entry.contract_id === '';
+  const noContract = entry.contract_id == null || entry.contract_id === '';
   const noExpiry = entry.expires_at === undefined || entry.expires_at === null;
   return noContract && noExpiry;
 }

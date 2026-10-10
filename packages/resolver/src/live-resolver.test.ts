@@ -4,6 +4,7 @@ import { configureAnsAcronym } from './ans-suffix';
 import {
   LOCALNET_UNVERIFIED_ENTRY,
   DEVNET_DSO_ENTRY,
+  LOCALNET_DSO_ANS_ENTRY,
   EXPIRED_ENTRY,
 } from './fixtures/splice-ans-fixtures';
 
@@ -60,6 +61,24 @@ describe('LiveResolver', () => {
     });
 
     const result = await resolver.resolve('dso.cns');
+    expect(result.status).toBe('ok');
+    expect(result.reasonCode).toBe('OK');
+  });
+
+  it('maps LocalNet DSO entry with null contract_id to ok', async () => {
+    const fetchImpl = mockFetch({
+      'by-name/dso.ans': () =>
+        new Response(JSON.stringify({ entry: LOCALNET_DSO_ANS_ENTRY }), { status: 200 }),
+    });
+
+    const resolver = new LiveResolver({
+      baseUrl: SCAN_BASE,
+      style: 'scan',
+      ansAcronym: 'ans',
+      fetchImpl,
+    });
+
+    const result = await resolver.resolve('dso');
     expect(result.status).toBe('ok');
     expect(result.reasonCode).toBe('OK');
   });
